@@ -1,7 +1,8 @@
 import pandas as pd
-import geopandas
+import geopandas as gpd
 import matplotlib.pyplot as plt
 from geodatasets import get_path
+from shapely.geometry import LineString
 
 #Source Code
 df = pd.DataFrame(
@@ -13,18 +14,31 @@ df = pd.DataFrame(
     }
 )
 
-gdf = geopandas.GeoDataFrame(
-    df, geometry=geopandas.points_from_xy(df.Longitude, df.Latitude), crs="EPSG:4326"
+gdf = gpd.GeoDataFrame(
+    df, geometry=gpd.points_from_xy(df.Longitude, df.Latitude), crs="EPSG:4326"
 )
 
 print(gdf.head())
 
-world = geopandas.read_file(get_path("naturalearth.land"))
+world = gpd.read_file(get_path("naturalearth.land"))
+
+# Create edges (lines) between each point
+lines = []
+for i in range(len(gdf)):
+    for j in range(i + 1, len(gdf)):
+        point1 = gdf.geometry[i]
+        point2 = gdf.geometry[j]
+        lines.append(LineString([point1, point2]))
+
+# Create GeoDataFrame for lines
+edges_gdf = gpd.GeoDataFrame(geometry=lines, crs="EPSG:4326")
 
 # We restrict to South America.
 ax = world.clip([-90, -55, -25, 15]).plot(color="white", edgecolor="black")
 
-# We can now plot our ``GeoDataFrame``.
-gdf.plot(ax=ax, color="red")
+# Plot points and edges
+gdf.plot(ax=ax, color="red", label="Cities")
+edges_gdf.plot(ax=ax, color="blue", linewidth=0.5, label="Edges")
 
+plt.legend()
 plt.show()
