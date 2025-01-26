@@ -1,4 +1,5 @@
 # For gps_visualization.py
+geopandas information: https://geopandas.org/en/stable/index.html
 1. You need to install geopandas to run this: https://geopandas.org/en/stable/getting_started/install.html
    You can do this by 
    $pip install geopandas
