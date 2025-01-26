@@ -13,3 +13,7 @@ geopandas information: https://geopandas.org/en/stable/index.html
 
 3. And apparentlly you need fiona:
     $ pip install fiona
+
+
+#For louvain_method.py
+1. You will need networkX: pip install networkx python-louvain
