@@ -77,7 +77,11 @@ def main():
     #     (7, 8, {'weight': 1}),
     # ])
     G = nx.karate_club_graph()
-    # Assign weights to edges (for example, set all weights to 1)
+    # # Assign weights to edges
+    # for u, v in G.edges:
+    # G[u][v]["weight"] = 1.0
+    
+    
     print("Edge Weights:")
     for u, v, data in G.edges(data=True):
         print(f"({u}, {v}) - weight: {data['weight']}")
