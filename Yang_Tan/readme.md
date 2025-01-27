@@ -6,7 +6,7 @@
 
 1. **Install `networkx` and `python-louvain`:**
    ```bash
-   pip install networkx python-louvain
+   pip install networkx
    ```
 
 2. **Install `geopandas`:**
@@ -44,7 +44,7 @@
 
 1. **Install `networkx` and `python-louvain`:**
    ```bash
-   pip install networkx python-louvain
+   pip install networkx
    ```
 
 --- 
