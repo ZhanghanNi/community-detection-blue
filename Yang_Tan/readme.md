@@ -25,18 +25,34 @@
      ```bash
      conda install -c conda-forge geodatasets
      ```
+   - or `pip`
+     ```bash
+     pip install geodatasets
+     ```
 
 4. **Install `fiona`:**
    - You can install it with pip:
      ```bash
      pip install fiona
      ```
+install pyproj
+conda config --prepend channels conda-forge
+conda config --set channel_priority strict
+conda create -n pyproj_env pyproj
+conda activate pyproj_env
+
+pip install --upgrade botocore boto3
 
 ### Additional Resources
 - Geopandas documentation: [Geopandas Official Docs](https://geopandas.org/en/stable/index.html).
 - If you’re new to `conda`, you can find the installation guide for Miniconda [here](https://docs.anaconda.com/miniconda/install/#quick-command-line-install).
 
 ---
+test
+
+pip3 install fsspec gcsfs
+
+
 
 ## Louvain Method (`louvain_method.py`)
 
