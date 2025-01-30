@@ -39,9 +39,12 @@ def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
                 if G.has_edge(u, v)
             ]
         )
+        
         degree_sum = sum([G.degree(node, weight="weight") for node in community])
         print(f"Community: {community}, internal_weight: {internal_weight}, degree_sum: {degree_sum}")
+        
         Q += internal_weight / (2 * m) - (degree_sum / (2 * m)) ** 2
+        
     return Q
 
 
@@ -131,5 +134,5 @@ def plot_graph_with_communities(
     plt.tight_layout()
 
     # Show the plot
-    plt.title("Graph with Communities Detected by Louvain Method")
+    plt.title(title)
     plt.show()
