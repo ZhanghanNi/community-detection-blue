@@ -41,7 +41,7 @@ def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
         )
         
         degree_sum = sum([G.degree(node, weight="weight") for node in community])
-        print(f"Community: {community}, internal_weight: {internal_weight}, degree_sum: {degree_sum}")
+        # print(f"Community: {community}, internal_weight: {internal_weight}, degree_sum: {degree_sum}")
         
         Q += internal_weight / (2 * m) - (degree_sum / (2 * m)) ** 2
         

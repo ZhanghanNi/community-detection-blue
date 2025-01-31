@@ -15,24 +15,27 @@ sys.path.append("../../Util")
 import utils
 
 
-def girvan_newman(G: nx.Graph) -> List[Set[int]]:
+def girvan_newman(G: nx.Graph, immutable_G) -> List[Set[int]]:
     """
     Highest level runner function for Girvan-Newman implementation,
     is called in `girvan_newman_implementation.py`
 
     Parameters:
-    - G: Network X representation of the input graph
+    - G: Network X representation of the input graph to be mutated by Girvan-Newman
+    - immutable_G: Copy of G in it's original state to use for calculating modularity of different communities
+    
 
     Returns:
     - A list of communities found by the Girvan-Newman algorithm (represented as sets)
     """
 
     optimal_communities: List[Set[int]] = get_communities(G)
-    max_modularity: float = utils.modularity(G, optimal_communities)
+    max_modularity: float = utils.modularity(immutable_G, optimal_communities)
+    print(f"Initial modularity (me): {max_modularity}")
 
     while G.edges():
         current_communities = get_communities(G)
-        current_modularity = utils.modularity(G, current_communities)
+        current_modularity = utils.modularity(immutable_G, current_communities)
 
         if current_modularity > max_modularity:
             max_modularity = current_modularity
@@ -45,7 +48,6 @@ def girvan_newman(G: nx.Graph) -> List[Set[int]]:
     print(f"Final modularity (me): {max_modularity}")
 
     return optimal_communities
-
 
 def get_max_betweenness_edge(G: nx.Graph) -> Tuple:
     """
