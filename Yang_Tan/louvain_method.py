@@ -3,6 +3,10 @@ import numpy as np
 from typing import List, Set, Tuple
 import matplotlib.pyplot as plt
 
+import sys
+sys.path.append("../Util")
+import utils
+
 def louvain_method(G: nx.Graph) -> List[Set[int]]:
     """
     Apply the Louvain method for community detection.
@@ -18,7 +22,7 @@ def louvain_method(G: nx.Graph) -> List[Set[int]]:
    # Initialize each node in its own community
     communities = [{node} for node in G.nodes()]
     
-    modularity_before = modularity(G, communities)
+    modularity_before = utils.modularity(G, communities)
     #print(f"Initial modularity: {modularity_before}")
     
     # Repeat until modularity stops improving
@@ -26,7 +30,7 @@ def louvain_method(G: nx.Graph) -> List[Set[int]]:
         improvement = False
         for node in G.nodes():
             # Try moving the node to other communities and check modularity gain
-            new_modularity, best_community = modularity_gain_bymoving(G, node, communities, modularity_before)
+            new_modularity, best_community = modularity_gained_by_moving(G, node, communities, modularity_before)
             #print(f"Node {node}: Modularity before: {modularity_before}, after: {new_modularity}")
             
             if new_modularity > modularity_before:
@@ -41,36 +45,7 @@ def louvain_method(G: nx.Graph) -> List[Set[int]]:
     
     return remove_empty_communities(communities)
 
-def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
-    """
-    Calculate the modularity Q of a partitioning of the graph.
-    
-    Modularity is calculated as:
-    Q = (1 / 2m) * Σ[i,j] { A_ij - (k_i * k_j) / (2m) } * δ(c_i, c_j)
-    
-    where:
-    - A_ij is the weight of the edge between nodes i and j,
-    - k_i and k_j are the degrees of nodes i and j,
-    - m is the total weight of the edges in the graph,
-    - δ(c_i, c_j) is 1 if nodes i and j belong to the same community, and 0 otherwise.
-    
-    Parameters:
-    - G: The graph.
-    - communities: A list of sets where each set is a community of nodes.
-    
-    Returns:
-    - The modularity score of the partitioning.
-    """
-    m = G.size(weight='weight')  # Total weight of the edges in the graph
-    Q = 0.0
-    for community in communities:
-        internal_weight = sum([G[u][v].get('weight', 1) for u in community for v in community if G.has_edge(u, v)])
-        degree_sum = sum([G.degree(node, weight='weight') for node in community])
-        #print(f"Community: {community}, internal_weight: {internal_weight}, degree_sum: {degree_sum}")
-        Q += internal_weight / (2 * m) - (degree_sum / (2 * m)) ** 2
-    return Q
-
-def modularity_gain_bymoving(G: nx.Graph, node: int, communities: List[Set[int]], modularity_before: float) -> Tuple[float, List[Set[int]]]:
+def modularity_gained_by_moving(G: nx.Graph, node: int, communities: List[Set[int]], modularity_before: float) -> Tuple[float, List[Set[int]]]:
     """
     Attempt to move a node to another community and compute the modularity gain.
     
@@ -97,7 +72,7 @@ def modularity_gain_bymoving(G: nx.Graph, node: int, communities: List[Set[int]]
     for i in range(len(communities)):
         # Create a new set of communities where the node is added to the i-th community
         new_communities = communities_without_node[:i] + [communities[i].union({node})] + communities_without_node[i + 1:]
-        new_modularity = modularity(G, new_communities)
+        new_modularity = utils.modularity(G, new_communities)
         gain = new_modularity - modularity_before
         
         #print(f"Node {node} move to community {i}: New modularity: {new_modularity}, Gain: {gain}")
