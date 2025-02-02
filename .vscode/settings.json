@@ -1,5 +1,7 @@
 {
     "python.analysis.extraPaths": [
-        "./Util"
+        "./Util",
+        "./Aidan/girvan_newman_implementation",
+        "./Yang_Tan"
     ]
 }

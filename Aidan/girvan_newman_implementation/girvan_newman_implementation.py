@@ -10,6 +10,7 @@ Author: Aidan Roessler
 import networkx as nx
 import girvan_newman as gn
 import itertools
+from typing import List, Set, Tuple, Dict
 
 import sys
 
@@ -25,7 +26,7 @@ def main():
     immutable_G = nx.karate_club_graph()
     G = nx.karate_club_graph()
 
-    girvan_newman_communities = gn.girvan_newman(G)
+    girvan_newman_communities = gn.girvan_newman(G, immutable_G)
 
     utils.plot_graph_with_communities(
         immutable_G,
@@ -33,22 +34,44 @@ def main():
         title="Karate Club Graph with Communities Labeled by our Girvan Newman Implementation",
     )
 
-    # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.centrality.girvan_newman.html
-    network_x_girvan_newman_communities_all_iterations = nx.community.girvan_newman(nx.karate_club_graph())
-    print("network x communities")
-    network_x_girvan_newman_limited_communities = list(
-        itertools.takewhile(
-            lambda c: len(c) <= len(girvan_newman_communities),
-            network_x_girvan_newman_communities_all_iterations,
+    network_x_iteration_with_highest_modularity = (
+        find_network_x_communities_with_highest_modularity(
+            immutable_G, immutable_G.number_of_nodes()
         )
-    )[-1]
+    )
 
-    print(network_x_girvan_newman_limited_communities)
     utils.plot_graph_with_communities(
         nx.karate_club_graph(),
-        network_x_girvan_newman_limited_communities,
+        network_x_iteration_with_highest_modularity,
         title="Karate Club Graph with Communities Labeled by Network X's Girvan Newman Implementation",
     )
+
+    print(
+        f"Is my final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
+    )
+
+
+def find_network_x_communities_with_highest_modularity(G: nx.Graph, max_communities: int):
+    max_modularity: float = -1.0
+    communities_with_max_modularity: Tuple[Set[int]] = None
+
+    # Generate all possible community partitions using the Girvan–Newman algorithm
+    comp = nx.community.girvan_newman(G)
+
+    # Use itertools.takewhile to iterate over partitions until the number of communities exceeds max_communities
+    # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.centrality.girvan_newman.html
+    limited = itertools.takewhile(lambda c: len(c) <= max_communities, comp)
+
+    for current_communities in limited:        
+        current_modularity = utils.modularity(G, list(current_communities))
+
+        if current_modularity > max_modularity:
+            max_modularity = current_modularity
+            communities_with_max_modularity = current_communities
+
+    print(f"Final communities (NetworkX): {communities_with_max_modularity}")
+    print(f"Final modularity (NetworkX): {max_modularity}")
+    return communities_with_max_modularity
 
 if __name__ == "__main__":
     main()

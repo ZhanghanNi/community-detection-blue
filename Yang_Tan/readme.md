@@ -47,6 +47,9 @@ pip install --upgrade botocore boto3
 - Geopandas documentation: [Geopandas Official Docs](https://geopandas.org/en/stable/index.html).
 - If you’re new to `conda`, you can find the installation guide for Miniconda [here](https://docs.anaconda.com/miniconda/install/#quick-command-line-install).
 
+conda install contextily --channel conda-forge
+
+
 ---
 test
 
