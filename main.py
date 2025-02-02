@@ -43,7 +43,9 @@ def main():
                     gn.main(karate_club_graph, weighted=True, dataset_name=label)
                     gn.main(karate_club_graph, weighted=False, dataset_name=label)
         case "louvain_method":
-            lm.main()
+            match dataset:
+                case "karate_club":
+                    lm.main(karate_club_graph, dataset_name="Karate Club")
 
     run_eval.main()
 

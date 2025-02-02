@@ -17,7 +17,7 @@ sys.path.append("../../Util")
 import utils
 
 
-def main(G: nx.Graph, weighted: bool, dataset_name: str = "") -> List[Set[int]]:
+def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[int]]:
     """Main function that runs our implementation on test data for now"""
     # TODO: rethink name and if we should pass data in here
     if not weighted:
