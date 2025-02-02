@@ -17,7 +17,7 @@ sys.path.append("../../Util")
 import utils
 
 
-def main(G: nx.Graph, weighted: bool, dataset_name: str = ""):
+def main(G: nx.Graph, weighted: bool, dataset_name: str = "") -> List[Set[int]]:
     """Main function that runs our implementation on test data for now"""
     # TODO: rethink name and if we should pass data in here
     if not weighted:
@@ -38,7 +38,7 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = ""):
     utils.plot_graph_with_communities(
         immutable_G,
         girvan_newman_communities,
-        title=f"{"Weighted" if weighted else "Unweighted"} {dataset_name} Graph with Communities Labeled by our Girvan Newman Implementation",
+        title=f"{'Weighted' if weighted else 'Unweighted'} {dataset_name} Graph with Communities Labeled by our Girvan Newman Implementation",
         label_edges=weighted
     )
 
@@ -49,15 +49,17 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = ""):
     )
 
     utils.plot_graph_with_communities(
-        nx.karate_club_graph(),
+        immutable_G,
         network_x_iteration_with_highest_modularity,
-        title=f"{"Weighted" if weighted else "Unweighted"} {dataset_name} with Communities Labeled by Network X's Girvan Newman Implementation",
+        title=f"{'Weighted' if weighted else 'Unweighted'} {dataset_name} with Communities Labeled by Network X's Girvan Newman Implementation",
         label_edges=weighted,
     )
 
     print(
         f"Is our final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
     )
+
+    return girvan_newman_communities
 
 
 def find_network_x_communities_with_highest_modularity(G: nx.Graph, max_communities: int):
