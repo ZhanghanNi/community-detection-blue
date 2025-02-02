@@ -49,7 +49,7 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = "") -> List[Set[int]]:
     )
 
     utils.plot_graph_with_communities(
-        nx.karate_club_graph(),
+        immutable_G,
         network_x_iteration_with_highest_modularity,
         title=f"{'Weighted' if weighted else 'Unweighted'} {dataset_name} with Communities Labeled by Network X's Girvan Newman Implementation",
         label_edges=weighted,
