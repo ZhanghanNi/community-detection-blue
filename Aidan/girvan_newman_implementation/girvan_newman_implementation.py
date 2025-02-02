@@ -17,23 +17,23 @@ sys.path.append("../../Util")
 import utils
 
 
-def main(weighted: bool):
+def main(G: nx.Graph, weighted: bool):
     """Main function that runs our implementation on test data for now"""
     # TODO: rethink name and if we should pass data in here
     if not weighted:
         # Remove edges from the weighted version of the graph
-        weighted_g = nx.karate_club_graph()
+        weighted_g = G
 
         for edge in weighted_g.edges(data=True):
             edge[2]['weight'] = 1
 
         immutable_G = weighted_g
-        G = immutable_G.copy()
+        G_to_pass = immutable_G.copy()
     else:
-        immutable_G = nx.karate_club_graph()
-        G = nx.karate_club_graph()
-        
-    girvan_newman_communities = gn.girvan_newman(G, immutable_G, False)
+        immutable_G = G
+        G_to_pass = G.copy()
+
+    girvan_newman_communities = gn.girvan_newman(G_to_pass, immutable_G, False)
 
     utils.plot_graph_with_communities(
         immutable_G,

@@ -24,16 +24,17 @@ def main():
 
     print(f"Selected algorithm: {algorithm}")
 
+    karate_club_graph = nx.karate_club_graph()
+
     match algorithm:
         case "girvan_newman":
-            print("calling girvan-newman")
-            gn.main(weighted=True)
-            gn.main(weighted=False)
+            gn.main(karate_club_graph, weighted=True)
+            gn.main(karate_club_graph, weighted=False)
         case "louvain_method":
             lm.main()
-    
+
     run_eval.main()
-    
+
 
 if __name__ == "__main__":
     main()
