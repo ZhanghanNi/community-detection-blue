@@ -156,5 +156,3 @@ if __name__ == "__main__":
         print(f"  Louvain:       communities={row['LV_Communities']}  "
               f"time={row['LV_Time']:.4f}s  "
               f"mod={row['LV_Modularity']:.3f}  cond={row['LV_Conductance']:.3f}  gt={row['LV_GroundTruth']:.3f}")
-
-    print("\nDone.")
