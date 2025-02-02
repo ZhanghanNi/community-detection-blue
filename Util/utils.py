@@ -60,7 +60,7 @@ def plot_graph(
 
     # Plot the graph
     plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(G)  # positions for all nodes
+    pos = nx.spring_layout(G, seed=1234)  # positions for all nodes
     nx.draw_networkx_nodes(
         G, pos, cmap=plt.cm.rainbow, node_size=500
     )
@@ -101,7 +101,7 @@ def plot_graph_with_communities(
 
     # Plot the graph
     plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(G)  # positions for all nodes
+    pos = nx.spring_layout(G, seed=1234)  # positions for all nodes
     nx.draw_networkx_nodes(
         G, pos, node_color=node_colors, cmap=plt.cm.rainbow, node_size=500
     )
