@@ -27,7 +27,8 @@ def main():
     match algorithm:
         case "girvan_newman":
             print("calling girvan-newman")
-            gn.main()
+            gn.main(weighted=True)
+            gn.main(weighted=False)
         case "louvain_method":
             lm.main()
     

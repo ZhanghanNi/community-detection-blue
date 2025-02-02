@@ -13,25 +13,33 @@ import itertools
 from typing import List, Set, Tuple, Dict
 
 import sys
-
 sys.path.append("../../Util")
 import utils
 
 
-def main():
+def main(weighted: bool):
     """Main function that runs our implementation on test data for now"""
-
     # TODO: rethink name and if we should pass data in here
-    # For now we are just passing in the karate club graph
-    immutable_G = nx.karate_club_graph()
-    G = nx.karate_club_graph()
+    if not weighted:
+        # Remove edges from the weighted version of the graph
+        weighted_g = nx.karate_club_graph()
 
-    girvan_newman_communities = gn.girvan_newman(G, immutable_G)
+        for edge in weighted_g.edges(data=True):
+            edge[2]['weight'] = 1
+
+        immutable_G = weighted_g
+        G = immutable_G.copy()
+    else:
+        immutable_G = nx.karate_club_graph()
+        G = nx.karate_club_graph()
+        
+    girvan_newman_communities = gn.girvan_newman(G, immutable_G, False)
 
     utils.plot_graph_with_communities(
         immutable_G,
         girvan_newman_communities,
-        title="Karate Club Graph with Communities Labeled by our Girvan Newman Implementation",
+        title=f"{"Weighted" if weighted else "Unweighted"} Karate Club Graph with Communities Labeled by our Girvan Newman Implementation",
+        label_edges=weighted
     )
 
     network_x_iteration_with_highest_modularity = (
@@ -43,11 +51,12 @@ def main():
     utils.plot_graph_with_communities(
         nx.karate_club_graph(),
         network_x_iteration_with_highest_modularity,
-        title="Karate Club Graph with Communities Labeled by Network X's Girvan Newman Implementation",
+        title=f"{"Weighted" if weighted else "Unweighted"} Karate Club Graph with Communities Labeled by Network X's Girvan Newman Implementation",
+        label_edges=weighted,
     )
 
     print(
-        f"Is my final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
+        f"Is our final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
     )
 
 
