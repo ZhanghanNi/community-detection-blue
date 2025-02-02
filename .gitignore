@@ -180,3 +180,6 @@ cython_debug/
 
 # macOS history files
 .DS_Store
+
+#data
+*.txt
