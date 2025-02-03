@@ -1,3 +1,9 @@
+"""
+File to run all of our implementations on all of our datasets
+
+Authors: Aidan Roessler, Tony Ni
+"""
+
 import networkx as nx
 import sys
 import argparse
