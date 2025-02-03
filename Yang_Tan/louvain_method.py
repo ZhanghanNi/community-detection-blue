@@ -43,7 +43,7 @@ def louvain_method(G: nx.Graph) -> List[Set[int]]:
         if not improvement:
             break
     
-    return remove_empty_communities(communities)
+    return utils.remove_empty_communities(communities)
 
 def modularity_gained_by_moving(G: nx.Graph, node: int, communities: List[Set[int]], modularity_before: float) -> Tuple[float, List[Set[int]]]:
     """
@@ -83,62 +83,3 @@ def modularity_gained_by_moving(G: nx.Graph, node: int, communities: List[Set[in
             best_communities = new_communities
     
     return best_modularity, best_communities
-
-def merge_communities(G: nx.Graph, communities: List[Set[int]]) -> nx.Graph:
-    """
-    Merge communities in the graph based on edge weights between them.
-    
-    Each community is merged into a single node, and edges are weighted
-    by the sum of the weights of the edges between the communities.
-    
-    Parameters:
-    - G: The original graph.
-    - communities: A list of sets where each set represents a community of nodes.
-    
-    Returns:
-    - A new graph where each community is a node, and edges are weighted 
-      by the sum of the edges between the communities.
-    """
-    # Remove empty communities
-    communities = remove_empty_communities(communities)
-    
-    # Create a new graph to store the merged communities
-    new_G = nx.Graph()
-    
-    # Map each node to its community
-    node_to_community = {}
-    for i, community in enumerate(communities):
-        for node in community:
-            node_to_community[node] = i
-    
-    # Add nodes to the new graph (one node per community)
-    for i in range(len(communities)):
-        new_G.add_node(i)
-    
-    # Add edges between communities based on the edges between the nodes
-    for u, v, data in G.edges(data=True):
-        community_u = node_to_community.get(u)
-        community_v = node_to_community.get(v)
-        
-        if community_u is not None and community_v is not None and community_u != community_v:
-            weight = data.get('weight', 1)     
-            
-            if new_G.has_edge(community_u, community_v):
-                new_G[community_u][community_v]['weight'] += weight
-            else:
-                new_G.add_edge(community_u, community_v, weight=weight)
-                
-    
-    return new_G
-
-def remove_empty_communities(communities: List[Set[int]]) -> List[Set[int]]:
-    """
-    Remove empty communities from the list of communities.
-    
-    Parameters:
-    - communities: A list of sets where each set represents a community of nodes.
-    
-    Returns:
-    - A new list of communities with empty communities removed.
-    """
-    return [community for community in communities if len(community) > 0]

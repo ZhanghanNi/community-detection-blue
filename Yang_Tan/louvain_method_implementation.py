@@ -56,7 +56,7 @@ def main(G: nx.Graph, dataset_name: str = "Graph"):
         communities,
         title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
     )
-    merged_G = lm.merge_communities(
+    merged_G = utils.merge_communities(
         G,
         communities,
     )
