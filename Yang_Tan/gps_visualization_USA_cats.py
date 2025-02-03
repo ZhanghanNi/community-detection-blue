@@ -1,7 +1,13 @@
 import folium
 import pandas as pd
 import geopandas as gpd
+import os
 import random
+
+
+output_folder = "html"
+output_file = "cat_movement_paths_map.html"
+output_path = os.path.join(output_folder, output_file)
 
 # Load the dataset (ensure the file path is correct)
 file_path = "archive/Pet Cats United States.csv"  # Adjust this path to your dataset location
@@ -69,4 +75,4 @@ for cat_id, group in gdf.groupby('individual-local-identifier'):
             popup=f"Cat ID: {cat_id}, Timestamp: {row['timestamp']}"
         ).add_to(m)
 # Save the map to an HTML file (overwriting any existing file with the same name)
-m.save("cat_movement_paths_map.html")
+m.save(output_path)

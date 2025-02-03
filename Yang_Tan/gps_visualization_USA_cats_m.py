@@ -1,8 +1,13 @@
 import folium
 import pandas as pd
+import os
 import geopandas as gpd
 from shapely.geometry import Point
 from folium.plugins import MarkerCluster
+
+output_folder = "html"
+output_file = "motorcattag_location_path_2013_08_14.html"
+output_path = os.path.join(output_folder, output_file)
 
 # Load the dataset (ensure the file path is correct)
 file_path = "archive/Pet Cats United States.csv"  # Adjust this path to your dataset location
@@ -38,5 +43,5 @@ m = folium.Map(location=[first_lat, first_lon], zoom_start=14)
 path_coordinates = [[row["location-lat"], row["location-long"]] for _, row in gdf.iterrows()]
 folium.PolyLine(path_coordinates, color="blue", weight=2, opacity=0.7).add_to(m)
 
-# Save this specific map to a new HTML file (overwriting any existing file with the same name)
-m.save("motorcattag_location_path_2013_08_14.html")
+# Save the map inside the specified folder
+m.save(output_path)
