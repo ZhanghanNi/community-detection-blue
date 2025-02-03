@@ -60,9 +60,9 @@ def get_max_betweenness_edge(G: nx.Graph, weighted: bool) -> Tuple:
     Returns:
     - Edge with the highest betweenness centrality as a tuple of two nodes
     """
-    all_edges_betweenness_network_x = nx.edge_betweenness_centrality(
-        G, seed=1234, weight=None
-    )
+    # all_edges_betweenness_network_x = nx.edge_betweenness_centrality(
+    #     G, seed=1234, weight=None
+    # )
     # print(f"all_edges_betweenness (Network X): {all_edges_betweenness_network_x}")
 
     all_edges_betweenness = weighted_edge_betweenness_centrality(G) if weighted else unweighted_edge_betweenness_centrality(G)

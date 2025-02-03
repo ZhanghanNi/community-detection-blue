@@ -17,6 +17,10 @@ import louvain_method_implementation as lm
 import run_eval
 
 def main():
+    """
+    Highest level function in the whole project that takes in arguments from the CLI to 
+    run one of our algorithms on one of our datasets based on user input.
+    """
     # https://docs.python.org/3/library/argparse.html
     parser = argparse.ArgumentParser(
         description="Run our implementations of community detection algorithms on a dataset."
