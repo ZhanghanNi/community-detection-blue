@@ -1,6 +1,8 @@
 """
 File for storing shared utility functions used in different implementations
 (e.g. calculating modularity with modularity())
+
+Authors: Yang Tan, Aidan Roessler
 """
 
 import networkx as nx
@@ -27,6 +29,8 @@ def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
 
     Returns:
     - The modularity score of the partitioning.
+    
+    Author: Yang Tan
     """
     m = G.size(weight="weight")  # Total weight of the edges in the graph
     Q = 0.0
@@ -39,31 +43,29 @@ def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
                 if G.has_edge(u, v)
             ]
         )
-        
+
         degree_sum = sum([G.degree(node, weight="weight") for node in community])
-        print(f"Community: {community}, internal_weight: {internal_weight}, degree_sum: {degree_sum}")
-        
+        # print(f"Community: {community}, internal_weight: {internal_weight}, degree_sum: {degree_sum}")
+
         Q += internal_weight / (2 * m) - (degree_sum / (2 * m)) ** 2
-        
+
     return Q
 
 
-def plot_graph(
-    G: nx.Graph, label_edges: bool = False, title: str = "Graph"
-):
+def plot_graph(G: nx.Graph, label_edges: bool = False, title: str = "Graph"):
     """
     Plot the graph with nodes colored according to their communities.
 
     Parameters:
     - G: Network X representation of a graph
+
+    Authors: Yang Tan, Aidan Roessler
     """
 
     # Plot the graph
     plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(G)  # positions for all nodes
-    nx.draw_networkx_nodes(
-        G, pos, cmap=plt.cm.rainbow, node_size=500
-    )
+    pos = nx.spring_layout(G, seed=1234)  # positions for all nodes
+    nx.draw_networkx_nodes(G, pos, cmap=plt.cm.rainbow, node_size=500)
     nx.draw_networkx_edges(G, pos, alpha=0.5)
     nx.draw_networkx_labels(G, pos, font_size=12, font_weight="bold")
 
@@ -78,10 +80,10 @@ def plot_graph(
 
 
 def plot_graph_with_communities(
-    G: nx.Graph, 
+    G: nx.Graph,
     communities: List[Set[int]],
-    label_edges: bool = False, 
-    title = "Graph with Communities"
+    label_edges: bool = False,
+    title="Graph with Communities",
 ):
     """
     Plot the graph with nodes colored according to their communities.
@@ -89,6 +91,8 @@ def plot_graph_with_communities(
     Parameters:
     - G: The graph.
     - communities: The list of communities.
+
+    Authors: Yang Tan, Aidan Roessler
     """
     # Assign a color to each community
     community_colors = {}
@@ -101,7 +105,7 @@ def plot_graph_with_communities(
 
     # Plot the graph
     plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(G)  # positions for all nodes
+    pos = nx.spring_layout(G, seed=1234)  # positions for all nodes
     nx.draw_networkx_nodes(
         G, pos, node_color=node_colors, cmap=plt.cm.rainbow, node_size=500
     )
@@ -136,3 +140,70 @@ def plot_graph_with_communities(
     # Show the plot
     plt.title(title)
     plt.show()
+
+
+def merge_communities(G: nx.Graph, communities: List[Set[int]]) -> nx.Graph:
+    """
+    Merge communities in the graph based on edge weights between them.
+
+    Each community is merged into a single node, and edges are weighted
+    by the sum of the weights of the edges between the communities.
+
+    Parameters:
+    - G: The original graph.
+    - communities: A list of sets where each set represents a community of nodes.
+
+    Returns:
+    - A new graph where each community is a node, and edges are weighted
+      by the sum of the edges between the communities.
+
+    Author: Yang Tan
+    """
+    # Remove empty communities
+    communities = remove_empty_communities(communities)
+
+    # Create a new graph to store the merged communities
+    new_G = nx.Graph()
+
+    # Map each node to its community
+    node_to_community = {}
+    for i, community in enumerate(communities):
+        for node in community:
+            node_to_community[node] = i
+
+    # Add nodes to the new graph (one node per community)
+    for i in range(len(communities)):
+        new_G.add_node(i)
+
+    # Add edges between communities based on the edges between the nodes
+    for u, v, data in G.edges(data=True):
+        community_u = node_to_community.get(u)
+        community_v = node_to_community.get(v)
+
+        if (
+            community_u is not None
+            and community_v is not None
+            and community_u != community_v
+        ):
+            weight = data.get("weight", 1)
+
+            if new_G.has_edge(community_u, community_v):
+                new_G[community_u][community_v]["weight"] += weight
+            else:
+                new_G.add_edge(community_u, community_v, weight=weight)
+
+    return new_G
+
+def remove_empty_communities(communities: List[Set[int]]) -> List[Set[int]]:
+    """
+    Remove empty communities from the list of communities.
+
+    Parameters:
+    - communities: A list of sets where each set represents a community of nodes.
+
+    Returns:
+    - A new list of communities with empty communities removed.
+    
+    Author: Yang Tan
+    """
+    return [community for community in communities if len(community) > 0]

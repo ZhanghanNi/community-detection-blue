@@ -9,7 +9,7 @@ sys.path.append("../Util")
 import utils
 
 
-def main():
+def main(G: nx.Graph, dataset_name: str = "Graph"):
     # # Create a sample graph
     # G = nx.Graph()
     # # Add nodes with attributes
@@ -35,7 +35,6 @@ def main():
     #     (6, 8, {'weight': 2}),
     #     (7, 8, {'weight': 1}),
     # ])
-    G = nx.karate_club_graph()
     # # Assign weights to edges
     # for u, v in G.edges:
     # G[u][v]["weight"] = 1.0
@@ -52,16 +51,21 @@ def main():
         print(f"Community {i + 1}: {community}")
 
     # Plot the graph with communities
-    utils.plot_graph_with_communities(G, communities)
-    merged_G = lm.merge_communities(
-        G, communities
+    utils.plot_graph_with_communities(
+        G,
+        communities,
+        title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
+    )
+    merged_G = utils.merge_communities(
+        G,
+        communities,
     )
     print("\nAfter merging:")
     utils.plot_graph_with_communities(
         merged_G,
         communities=[{node} for node in merged_G.nodes()],
         label_edges=True,
-        title="Graph with Communities Detected by Louvain Method",
+        title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
     )
 
 
