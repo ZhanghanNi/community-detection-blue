@@ -32,18 +32,19 @@ def main():
 
     args = parser.parse_args()
     dataset: nx.Graph
+    dataset_name: str
 
     match args.dataset:
         case "karate_club":
+            dataset_name = "Karate Club"
             dataset = nx.karate_club_graph()
 
     match args.algorithm:
         case "girvan_newman":
-            label = "Karate Club"
-            gn.main(dataset, weighted=True, dataset_name=label)
-            gn.main(dataset, weighted=False, dataset_name=label)
+            gn.main(dataset, weighted=True, dataset_name=dataset_name)
+            gn.main(dataset, weighted=False, dataset_name=dataset_name)
         case "louvain_method":
-            lm.main(dataset, dataset_name="Karate Club")
+            lm.main(dataset, dataset_name=dataset_name)
 
     run_eval.main()
 
