@@ -54,18 +54,18 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[i
         label_edges=weighted
     )
 
-    network_x_iteration_with_highest_modularity = (
-        find_network_x_communities_with_highest_modularity(
-            immutable_G, immutable_G.number_of_nodes()
-        )
-    )
+    # network_x_iteration_with_highest_modularity = (
+    #     find_network_x_communities_with_highest_modularity(
+    #         immutable_G, immutable_G.number_of_nodes()
+    #     )
+    # )
 
-    utils.plot_graph_with_communities(
-        immutable_G,
-        network_x_iteration_with_highest_modularity,
-        title=f"{'Weighted' if weighted else 'Unweighted'} {dataset_name} with Communities Labeled by Network X's Girvan Newman Implementation",
-        label_edges=weighted,
-    )
+    # utils.plot_graph_with_communities(
+    #     immutable_G,
+    #     network_x_iteration_with_highest_modularity,
+    #     title=f"{'Weighted' if weighted else 'Unweighted'} {dataset_name} with Communities Labeled by Network X's Girvan Newman Implementation",
+    #     label_edges=weighted,
+    # )
 
     merged_G = utils.merge_communities(
         immutable_G,
@@ -78,9 +78,9 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[i
         title=f"{'Weighted' if weighted else 'Unweighted'} {dataset_name} Communities Detected by our Implementation of Girvan-Newman",
     )
 
-    print(
-        f"Is our final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
-    )
+    # print(
+    #     f"Is our final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
+    # )
 
     return girvan_newman_communities
 
