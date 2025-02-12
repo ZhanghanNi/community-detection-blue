@@ -32,7 +32,7 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[int]]:
 
     optimal_communities: List[Set[int]] = get_communities(G, weighted)
     max_modularity: float = utils.modularity(immutable_G, optimal_communities)
-    print(f"Initial modularity (us): {max_modularity}")
+    #(f"Initial modularity (us): {max_modularity}")
 
     while G.edges():
         current_communities = get_communities(G, weighted)
@@ -45,8 +45,8 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[int]]:
         edge_to_remove = get_max_betweenness_edge(G, weighted)
         G.remove_edge(*edge_to_remove)
 
-    print(f"Final communities (us): {list(optimal_communities)}")
-    print(f"Final modularity (us): {max_modularity}")
+    #print(f"Final communities (us): {list(optimal_communities)}")
+    #print(f"Final modularity (us): {max_modularity}")
 
     return optimal_communities
 

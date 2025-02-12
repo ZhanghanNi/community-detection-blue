@@ -7,9 +7,19 @@ from typing import List, Set, Tuple
 import sys
 sys.path.append("../Util")
 import utils
+def assign_uniform_weights(G: nx.Graph, weight: float = 1.0) -> None:
+    """
+    If the graph is unweighted, assign a uniform weight to all edges.
+    """
+    if not nx.is_weighted(G, weight='weight'):
+        for u, v in G.edges():
+            G[u][v]['weight'] = weight
 
 
-def main(G: nx.Graph, dataset_name: str = "Graph"):
+
+
+def main(G: nx.Graph, dataset_name: str = "Graph")-> List[Set[int]]:
+    #assign_uniform_weights(G, weight=1.0)
     # # Create a sample graph
     # G = nx.Graph()
     # # Add nodes with attributes
@@ -39,16 +49,19 @@ def main(G: nx.Graph, dataset_name: str = "Graph"):
     # for u, v in G.edges:
     # G[u][v]["weight"] = 1.0
 
-    print("Edge Weights:")
-    for u, v, data in G.edges(data=True):
-        print(f"({u}, {v}) - weight: {data['weight']}")
+    #print("Edge Weights:")
+   # for u, v, data in G.edges(data=True):
+     #   print(f"({u}, {v}) - weight: {data['weight']}")
     # Apply Louvain method
     communities = lm.louvain_method(G)
+    #print(communities)
 
     # Print the detected communities
-    print("\nDetected communities:")
-    for i, community in enumerate(communities):
-        print(f"Community {i + 1}: {community}")
+    # print("\nDetected communities:")
+    # for i, community in enumerate(communities):
+    #   print(f"Community {i + 1}: {community}")
+
+    print(communities)
 
     # Plot the graph with communities
     utils.plot_graph_with_communities(
@@ -60,13 +73,14 @@ def main(G: nx.Graph, dataset_name: str = "Graph"):
         G,
         communities,
     )
-    print("\nAfter merging:")
+    #print("\nAfter merging:")
     utils.plot_graph_with_communities(
         merged_G,
         communities=[{node} for node in merged_G.nodes()],
         label_edges=True,
         title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
     )
+    return communities
 
 
 if __name__ == "__main__":
