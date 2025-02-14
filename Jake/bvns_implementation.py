@@ -21,6 +21,27 @@ running it multiple times on the same graph will not yield the same solution. Co
 times and taking the average. 
 """
 
+def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
+    """
+    Main function to be called by main.py that runs the implementation of BVNS on
+    a specified data set
+    """
+    immutable_G = G
+    G_to_pass = G.copy()
+
+    bvns_communities = bvns(G_to_pass, kmax)
+    print("modularity: ", utils.modularity(immutable_G, bvns_communities))
+    utils.plot_graph_with_communities(immutable_G, bvns_communities)
+
+    merged_G = utils.merge_communities(immutable_G, bvns_communities)
+
+    utils.plot_graph_with_communities(
+        merged_G,
+        communities=[{node} for node in merged_G.nodes()],
+        label_edges=True,
+        title=f"{dataset_name} Communities Detected by our Implementation of Girvan-Newman",
+    )
+
 """
 This function runs bvns starting with a differing number of communities form 2-max_communities and
 returns the result with the best modularity. The starting communities are randomized
@@ -139,14 +160,3 @@ def local_search(graph, communities, kmax=1):
                         best_modularity = new_modularity
                         best_communities = copy.deepcopy(new_communities)
     return best_communities
-            
-        
-def main():
-    # Make sure this can run on the karate graph
-    G = nx.karate_club_graph()
-    solution = bvns(G, 5)
-    print(solution)
-    print("modularity: ", utils.modularity(G, solution))
-    
-if __name__ == "__main__":
-    main()
