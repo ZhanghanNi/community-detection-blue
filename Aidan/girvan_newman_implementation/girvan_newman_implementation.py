@@ -10,14 +10,14 @@ Author: Aidan Roessler
 import networkx as nx
 import girvan_newman as gn
 import itertools
-from typing import List, Set, Tuple, Dict
+from typing import List, Set, Tuple, Union
 
 import sys
 sys.path.append("../../Util")
 import utils
 
 
-def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[int]]:
+def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[Union[int, str]]]:
     """
     Main function that runs our Girvan-Newman implementation
     ** Only run this function to call our implementation **
@@ -71,7 +71,7 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[i
         immutable_G,
         girvan_newman_communities
     )
-    
+
     utils.plot_graph_with_communities(
         merged_G,
         communities=[{node} for node in merged_G.nodes()],
@@ -88,7 +88,7 @@ def main(G: nx.Graph, weighted: bool, dataset_name: str = "Graph") -> List[Set[i
 
 def find_network_x_communities_with_highest_modularity(G: nx.Graph, max_communities: int):
     max_modularity: float = -1.0
-    communities_with_max_modularity: Tuple[Set[int]] = None
+    communities_with_max_modularity: Tuple[Set[Union[int, str]]] = None
 
     # Generate all possible community partitions using the Girvan–Newman algorithm
     comp = nx.community.girvan_newman(G)
