@@ -33,13 +33,15 @@ def main():
         help="The implementation of a community detection algorithm to run.",
     )
     parser.add_argument(
-        "dataset", choices=["karate_club", "college_football"], help="The dataset to run the selected algorithm on"
+        "dataset",
+        choices=["karate_club", "college_football", "celegans_neural"],
+        help="The dataset to run the selected algorithm on",
     )
 
     args = parser.parse_args()
     dataset: nx.Graph
     dataset_name: str
-    bvns_kmax: int
+    bvns_kmax: int = 3
 
     match args.dataset:
         case "karate_club":
@@ -50,10 +52,15 @@ def main():
             dataset_name = "College Football"
             dataset = nx.read_gml("Jake/football/football.gml")
             bvns_kmax = 4
+        case "celegans_neural":
+            dataset_name = "Neural network of the nematode C. Elegans"
+            dataset = nx.read_gml("Jake/celegansneural/celegansneural.gml")
 
     match args.algorithm:
         case "girvan_newman":
-            gn.main(dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name)
+            gn.main(
+                dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
+            )
         case "louvain_method":
             lm.main(dataset, dataset_name=dataset_name)
         case "bvns":
