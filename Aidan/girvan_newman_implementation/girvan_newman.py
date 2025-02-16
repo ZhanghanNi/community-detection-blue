@@ -17,7 +17,7 @@ import utils
 
 Node = Union[int, str]
 
-def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[Node]]:
+def girvan_newman(G: nx.Graph, immutable_G, weighted: bool, max_communities: int = -1) -> List[Set[Node]]:
     """
     Highest level runner function for Girvan-Newman implementation,
     is called in `girvan_newman_implementation.py`
@@ -25,15 +25,16 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[Node]]:
     Parameters:
     - G: Network X representation of the input graph to be mutated by Girvan-Newman
     - immutable_G: Copy of G in it's original state to use for calculating modularity of different communities
+    - weighted: whether or not to treat the passed in graph as a weighted graph or not
+    - max_communities: Maximum amount of communities in the final result, regardless of modularity (optional)
     
-
     Returns:
     - A list of communities found by the Girvan-Newman algorithm (represented as sets)
     """
 
     optimal_communities: List[Set[Node]] = get_communities(G, weighted)
     max_modularity: float = utils.modularity(immutable_G, optimal_communities)
-    #(f"Initial modularity (us): {max_modularity}")
+    # (f"Initial modularity (us): {max_modularity}")
 
     while G.edges():
         current_communities = get_communities(G, weighted)
@@ -43,11 +44,17 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[Node]]:
             max_modularity = current_modularity
             optimal_communities = current_communities
 
+        if max_communities > -1 and len(current_communities) == max_communities:
+            print(current_communities)
+            # Compare to ground truth Girvan-Newman communities for Karate Club
+
+            return current_communities
+
         edge_to_remove = get_max_betweenness_edge(G, weighted)
         G.remove_edge(*edge_to_remove)
 
-    #print(f"Final communities (us): {list(optimal_communities)}")
-    #print(f"Final modularity (us): {max_modularity}")
+    # print(f"Final communities (us): {list(optimal_communities)}")
+    # print(f"Final modularity (us): {max_modularity}")
 
     return optimal_communities
 
