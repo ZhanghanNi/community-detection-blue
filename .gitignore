@@ -179,7 +179,10 @@ cython_debug/
 # Start of our custom additions
 
 # macOS history files
-.DS_Store
+*.DS_Store
 
 #data
 *.txt
+
+# Numbers files
+*.numbers
