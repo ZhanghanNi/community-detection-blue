@@ -14,6 +14,7 @@ def main():
     input_data = input_data.apply(pd.to_numeric, errors="coerce").fillna(0) # Replace non-numeric entreis with 0
     print(input_data)
     G = nx.from_pandas_adjacency(input_data)
+    # Don't actually use these parameters (2 and 5). They're only there so bvns will run quickly
     communities = bvns.bvns(G, 2, stop_criterion=5)
     utils.plot_graph_with_communities(G, communities)
 
