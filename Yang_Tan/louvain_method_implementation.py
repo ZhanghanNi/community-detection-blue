@@ -8,9 +8,6 @@ import sys
 sys.path.append("../Util")
 import utils
 def assign_uniform_weights(G: nx.Graph, weight: float = 1.0) -> None:
-    """
-    If the graph is unweighted, assign a uniform weight to all edges.
-    """
     if not nx.is_weighted(G, weight='weight'):
         for u, v in G.edges():
             G[u][v]['weight'] = weight
@@ -61,7 +58,7 @@ def main(G: nx.Graph, dataset_name: str = "Graph")-> List[Set[int]]:
     # for i, community in enumerate(communities):
     #   print(f"Community {i + 1}: {community}")
 
-    print(communities)
+    #print(communities)
 
     # Plot the graph with communities
     utils.plot_graph_with_communities(

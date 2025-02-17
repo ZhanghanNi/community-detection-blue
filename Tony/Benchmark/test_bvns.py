@@ -8,9 +8,9 @@ from sklearn.metrics import adjusted_rand_score
 import math  # for math.nan if desired
 
 
-def run_louvain(G):
+def run_bvns(G):
     import sys
-    sys.path.append("../../Yang_Tan")
+    sys.path.append("../../Jake")
     import louvain_method_implementation as lm
     return lm.main(G)
 
