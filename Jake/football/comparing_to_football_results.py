@@ -10,8 +10,9 @@ from collections import defaultdict
 
 def find_football_truth_values():
     # Load the GML file
-    G = nx.read_gml("./football/football.gml")
-    
+    # G = nx.read_gml("./football/football.gml")
+    G = nx.read_gml("Jake/football/football.gml")
+
     # Group nodes by their "value" (community)
     community_dict = defaultdict(set)
 
@@ -21,11 +22,12 @@ def find_football_truth_values():
     # Convert to a list of sets
     ground_truth_communities = list(community_dict.values())
 
-    out = ""
-    # Return the communities
-    for i, community in enumerate(ground_truth_communities, 1):
-        out += f"Community {i}: {community}" + "\n"
-    return out
+    return ground_truth_communities
+    # out = ""
+    # # Return the communities
+    # for i, community in enumerate(ground_truth_communities, 1):
+    #     out += f"Community {i}: {community}" + "\n"
+    # return out
 
 
 def find_girvan_newman_communities():
@@ -40,7 +42,7 @@ def find_girvan_newman_communities():
 
 def main():
     print(find_football_truth_values())
-    print(find_girvan_newman_communities)
+    # print(find_girvan_newman_communities)
         
 
 if __name__ == "__main__":

@@ -13,10 +13,12 @@ sys.path.append("Util")
 sys.path.append("Aidan/girvan_newman_implementation")
 sys.path.append("Yang_Tan")
 sys.path.append("Tony/PPI")
-sys.path.append("Jake")
+sys.path.append("Jake/bvns")
+sys.path.append("Jake/football")
 import girvan_newman_implementation as gn
 import louvain_method_implementation as lm
 import bvns_implementation as bvns
+import comparing_to_football_results as fr
 import run_eval
 
 Node = Union[int, str]
@@ -90,6 +92,19 @@ def main():
                 print(
                     "Incorrectly assigned nodes when amount of communities = 2:",
                     incorrectly_assigned_nodes,
+                )
+
+            if dataset_name == "College Football":
+                college_football_ground_truth_communities = (
+                    fr.find_football_truth_values()
+                )
+
+                ten_communities = gn.main(
+                    dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
+                )
+
+                print(
+                    f"Does our implementation return the same communities as the ground truth? {college_football_ground_truth_communities == ten_communities}"
                 )
 
         case "louvain_method":
