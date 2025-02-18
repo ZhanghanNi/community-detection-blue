@@ -88,7 +88,7 @@ def main():
                 incorrectly_assigned_nodes = (
                     karate_club_ground_truth_1 & generated_2
                 ) | (karate_club_ground_truth_2 & generated_1)
-                
+
                 print(
                     "Incorrectly assigned nodes when amount of communities = 2:",
                     incorrectly_assigned_nodes,
@@ -108,7 +108,20 @@ def main():
                 )
 
         case "louvain_method":
-            lm.main(dataset, dataset_name=dataset_name)
+            generated_communities = lm.main(dataset, dataset_name=dataset_name)
+            print(f"Final communities (us): {generated_communities}")
+
+            if dataset_name == "Karate Club":
+                network_x_communities = nx.community.louvain_communities(
+                    nx.karate_club_graph(), seed=1234
+                )
+
+            print(f"Final Communities (Network X): {network_x_communities}")
+
+            print(
+                f"Is our final result equal to Network X's? \n {generated_communities == network_x_communities}"
+            )
+
         case "bvns":
             bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)
 
