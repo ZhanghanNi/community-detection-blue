@@ -7,13 +7,15 @@ from networkx.algorithms.community.quality import modularity
 from sklearn.metrics import adjusted_rand_score
 import math  # for math.nan if desired
 
+
 def run_bvns(G):
     import sys
-    sys.path.append("../../Jake/bvns")
-    import bvns_implementation as bvns
-    return [set(lst) for lst in bvns.bvns(G)]
+    sys.path.append("../../Jake")
+    import louvain_method_implementation as lm
+    return lm.main(G)
 
-G = nx.ring_of_cliques(10, 2)
+
+G = nx.ring_of_cliques(2, 2)
 
 
 # # Add weighted edges
@@ -29,4 +31,4 @@ G = nx.ring_of_cliques(10, 2)
 #      (6, 8, {'weight': 2}),
 #      (7, 8, {'weight': 1}),
 #  ])
-print(run_bvns(G))
+run_louvain(G)
