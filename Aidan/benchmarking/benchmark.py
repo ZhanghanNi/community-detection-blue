@@ -61,7 +61,7 @@ def run_benchmark(graph: nx.Graph, kmax=3):
         "BVNS_Time": None,
         "BVNS_Memory": None,
         "BVNS_Modularity": None,
-        "BVNS_Final_Communities": None
+        "BVNS_Final_Communities": None,
     }
 
     # Run Girvan-Newman
@@ -72,7 +72,7 @@ def run_benchmark(graph: nx.Graph, kmax=3):
                 "GN_Time": gn_time,
                 "GN_Memory": gn_memory,
                 "GN_Modularity": modularity(graph, gn_partition),
-                "GN_Final_Communities": gn_partition
+                "GN_Final_Communities": gn_partition,
             }
         )
     except Exception as e:
@@ -86,7 +86,7 @@ def run_benchmark(graph: nx.Graph, kmax=3):
                 "LV_Time": lv_time,
                 "LV_Memory": lv_memory,
                 "LV_Modularity": modularity(graph, lv_partition),
-                "LV_Final_Communities": lv_partition
+                "LV_Final_Communities": lv_partition,
             }
         )
     except Exception as e:
@@ -94,7 +94,9 @@ def run_benchmark(graph: nx.Graph, kmax=3):
 
     # Run BVNS
     try:
-        bvns_partition, bvns_time, bvns_memory = measure_performance(run_bvns, graph, kmax=kmax)
+        bvns_partition, bvns_time, bvns_memory = measure_performance(
+            run_bvns, graph, kmax=kmax
+        )
         results.update(
             {
                 "BVNS_Time": bvns_time,
@@ -121,6 +123,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     dataset: nx.Graph
+    bvns_kmax = 3
 
     match args.dataset:
         case "karate_club":
@@ -130,7 +133,14 @@ if __name__ == "__main__":
             dataset = nx.read_gml("../../Jake/football/football.gml")
             bvns_kmax = 4
         case "celegans_neural":
-            dataset = nx.read_gml("../../Jake/celegansneural/celegansneural.gml")
+            sys.path.append("../../Jake/neural_connectivity")
+            sys.path.append("../../Jake/bvns")  # Ensure bvns is on the path
+
+            import csv_to_nx_graph as csv_to_nx
+
+            dataset = csv_to_nx.get_neuronal_connectivity_graph(
+                "../../Jake/neural_connectivity/SI7_herm.csv"
+            )
 
     output_file = f"{args.dataset}_benchmark_results.csv"
 
