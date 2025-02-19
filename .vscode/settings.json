@@ -3,6 +3,10 @@
         "./Util",
         "./Aidan/girvan_newman_implementation",
         "./Yang_Tan",
-        "./Tony/PPI"
+        "./Tony/PPI",
+        "./Jake",
+        "./Jake",
+        "./Jake/bvns",
+        "./Jake/football"
     ]
 }

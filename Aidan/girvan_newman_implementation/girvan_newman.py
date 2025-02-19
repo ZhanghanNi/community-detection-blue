@@ -6,7 +6,7 @@ Author: Aidan Roessler
 """
 
 import networkx as nx
-from typing import List, Set, Tuple, Dict, Deque
+from typing import List, Set, Tuple, Dict, Deque, Union
 from collections import deque
 import heapq
 
@@ -15,8 +15,9 @@ import sys
 sys.path.append("../../Util")
 import utils
 
+Node = Union[int, str]
 
-def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[int]]:
+def girvan_newman(G: nx.Graph, immutable_G, weighted: bool, max_communities: int = -1) -> List[Set[Node]]:
     """
     Highest level runner function for Girvan-Newman implementation,
     is called in `girvan_newman_implementation.py`
@@ -24,15 +25,16 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[int]]:
     Parameters:
     - G: Network X representation of the input graph to be mutated by Girvan-Newman
     - immutable_G: Copy of G in it's original state to use for calculating modularity of different communities
+    - weighted: whether or not to treat the passed in graph as a weighted graph or not
+    - max_communities: Maximum amount of communities in the final result, regardless of modularity (optional)
     
-
     Returns:
     - A list of communities found by the Girvan-Newman algorithm (represented as sets)
     """
 
-    optimal_communities: List[Set[int]] = get_communities(G, weighted)
+    optimal_communities: List[Set[Node]] = get_communities(G, weighted)
     max_modularity: float = utils.modularity(immutable_G, optimal_communities)
-    print(f"Initial modularity (us): {max_modularity}")
+    # (f"Initial modularity (us): {max_modularity}")
 
     while G.edges():
         current_communities = get_communities(G, weighted)
@@ -42,10 +44,15 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool) -> List[Set[int]]:
             max_modularity = current_modularity
             optimal_communities = current_communities
 
+        if max_communities > -1 and len(current_communities) == max_communities:
+            print(f"Final modularity (us): {current_modularity}")
+
+            return current_communities
+
         edge_to_remove = get_max_betweenness_edge(G, weighted)
         G.remove_edge(*edge_to_remove)
 
-    print(f"Final communities (us): {list(optimal_communities)}")
+    # print(f"Final communities (us): {list(optimal_communities)}")
     print(f"Final modularity (us): {max_modularity}")
 
     return optimal_communities
@@ -72,7 +79,7 @@ def get_max_betweenness_edge(G: nx.Graph, weighted: bool) -> Tuple:
     return max(all_edges_betweenness, key=all_edges_betweenness.get)
 
 
-def get_communities(G: nx.Graph, weighted: bool) -> List[Set[int]]:
+def get_communities(G: nx.Graph, weighted: bool) -> List[Set[Node]]:
     """
     Finds all communities by iterating through all nodes and calling
     get_community_unweighted() with a given node as a parameter if it hasn't
@@ -84,10 +91,10 @@ def get_communities(G: nx.Graph, weighted: bool) -> List[Set[int]]:
     Returns:
     - All communities of G (all connected components of G)
     """
-    visited_nodes: Set[int] = set()
-    communities: List[Set[int]] = []
+    visited_nodes: Set[Node] = set()
+    communities: List[Set[Node]] = []
 
-    def get_community_unweighted(root_node) -> Set[int]:
+    def get_community_unweighted(root_node) -> Set[Node]:
         """
         Find a single community in an unweighted graph based on one of its nodes
         by performing BFS from that `root_node`
@@ -98,8 +105,8 @@ def get_communities(G: nx.Graph, weighted: bool) -> List[Set[int]]:
         Returns:
         - Entire community the `root_node` belongs to
         """
-        community: Set[int] = set()
-        bfs_queue: Deque[int] = deque([root_node])
+        community: Set[Node] = set()
+        bfs_queue: Deque[Node] = deque([root_node])
 
         community.add(root_node)
         visited_nodes.add(root_node)
@@ -115,7 +122,7 @@ def get_communities(G: nx.Graph, weighted: bool) -> List[Set[int]]:
 
         return community
 
-    def get_community_weighted(root_node: int) -> Set[int]:
+    def get_community_weighted(root_node: Node) -> Set[Node]:
         """
         Find a single community in a weighted graph based on one of its nodes
         by performing Dijkstra's algorithm from that `root_node`.
@@ -126,8 +133,8 @@ def get_communities(G: nx.Graph, weighted: bool) -> List[Set[int]]:
         Returns:
         - Entire community the `root_node` belongs to
         """
-        community: Set[int] = set()
-        dijkstra_priority_queue: List[Tuple[int, int]] = [(0, root_node)]
+        community: Set[Node] = set()
+        dijkstra_priority_queue: List[Tuple[Node, Node]] = [(0, root_node)]
 
         visited_nodes.add(root_node)
 
@@ -161,7 +168,7 @@ def get_communities(G: nx.Graph, weighted: bool) -> List[Set[int]]:
     return communities
 
 
-def unweighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int], float]:
+def unweighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[Node, Node], float]:
     """
     Calculate the edge betweenness centrality of every edge in the given
     unweighted graph inspired by the pseudocode algorithm to calculate edge betweenness for nodes from:
@@ -177,25 +184,25 @@ def unweighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int],
     # Deque syntax inspired by: https://www.geeksforgeeks.org/python-perform-append-at-beginning-of-list/
 
     # Populate an initial dictionary with 0 values for all edges
-    betweenness_centrality: Dict[Tuple[int, int], float] = {
+    betweenness_centrality: Dict[Tuple[Node, Node], float] = {
         edge: 0.0 for edge in G.edges()
     }
 
     # s = source node
     for s in G.nodes():
         # Setup all we need to calculate dependency
-        processing_stack: Deque[int] = deque([])
+        processing_stack: Deque[Node] = deque([])
 
-        predecessors: Dict[int, List[int]] = {node: [] for node in G.nodes()}
+        predecessors: Dict[Node, List[Node]] = {node: [] for node in G.nodes()}
 
-        num_shortest_paths_from_s: Dict[int, int] = {node: 0 for node in G.nodes()}
+        num_shortest_paths_from_s: Dict[Node, Node] = {node: 0 for node in G.nodes()}
         num_shortest_paths_from_s[s] = 1
 
-        distance_from_s: Dict[int, int] = {node: -1 for node in G.nodes()}
+        distance_from_s: Dict[Node, Node] = {node: -1 for node in G.nodes()}
         distance_from_s[s] = 0
 
         # Perform BFS to populate all variables initialized above
-        bfs_queue: Deque[int] = deque([])
+        bfs_queue: Deque[Node] = deque([])
         bfs_queue.append(s)
 
         while bfs_queue:
@@ -218,7 +225,7 @@ def unweighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int],
         # Use the variables we initialized with BFS to calculate each node's
         # dependency and then use that dependency to calculate the betweenness centrality
         # for the edges attached to it
-        dependency: Dict[int, float] = {node: 0 for node in G.nodes()}
+        dependency: Dict[Node, float] = {node: 0 for node in G.nodes()}
 
         while processing_stack:
             popped_node = processing_stack.popleft()
@@ -232,11 +239,11 @@ def unweighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int],
                     1 + dependency[popped_node]
                 )
 
-                edge_to_update: Tuple[int, int] = tuple(
-                    sorted(
-                        (predecessor, popped_node)
-                    )  # Ensures (small, large) order that Network X uses
-                )
+                edge_to_update: Tuple[Node, Node] = (predecessor, popped_node)
+                
+                if edge_to_update not in betweenness_centrality.keys():
+                    edge_to_update = (popped_node, predecessor)
+                
                 betweenness_centrality[
                     edge_to_update
                 ] += proportion_of_shortest_paths * (1 + dependency[popped_node])
@@ -244,7 +251,7 @@ def unweighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int],
     return betweenness_centrality
 
 
-def weighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int], float]:
+def weighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[Node, Node], float]:
     """
     Calculate the edge betweenness centrality of every edge in the given
     weighted graph inspired by the pseudocode algorithm to calculate edge betweenness for nodes from:
@@ -260,25 +267,25 @@ def weighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int], f
     # Deque syntax inspired by: https://www.geeksforgeeks.org/python-perform-append-at-beginning-of-list/
 
     # Populate an initial dictionary with 0 values for all edges
-    betweenness_centrality: Dict[Tuple[int, int], float] = {
+    betweenness_centrality: Dict[Tuple[Node, Node], float] = {
         edge: 0.0 for edge in G.edges()
     }
 
     # s = source node
     for s in G.nodes():
         # Setup all we need to calculate dependency
-        processing_stack: Deque[int] = deque([])
+        processing_stack: Deque[Node] = deque([])
 
-        predecessors: Dict[int, List[int]] = {node: [] for node in G.nodes()}
+        predecessors: Dict[Node, List[Node]] = {node: [] for node in G.nodes()}
 
-        num_shortest_paths_from_s: Dict[int, int] = {node: 0 for node in G.nodes()}
+        num_shortest_paths_from_s: Dict[Node, Node] = {node: 0 for node in G.nodes()}
         num_shortest_paths_from_s[s] = 1
 
-        distance_from_s: Dict[int, int] = {node: -1 for node in G.nodes()}
+        distance_from_s: Dict[Node, Node] = {node: -1 for node in G.nodes()}
         distance_from_s[s] = 0
 
         # Perform BFS to populate all variables initialized above
-        dijkstra_priority_queue: List[Tuple[int, int]] = [(0, s)]
+        dijkstra_priority_queue: List[Tuple[Node, Node]] = [(0, s)]
 
         while dijkstra_priority_queue:
             dequeued_node_distance, dequeued_node = heapq.heappop(
@@ -288,7 +295,7 @@ def weighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int], f
 
             for neighbor in G.neighbors(dequeued_node):
                 edge_weight = G[dequeued_node][neighbor].get('weight', 1)
-                
+
                 # Neighbor node found for the first time?
                 if distance_from_s[neighbor] < 0:
                     heapq.heappush(
@@ -307,7 +314,7 @@ def weighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int], f
         # Use the variables we initialized with BFS to calculate each node's
         # dependency and then use that dependency to calculate the betweenness centrality
         # for the edges attached to it
-        dependency: Dict[int, float] = {node: 0 for node in G.nodes()}
+        dependency: Dict[Node, float] = {node: 0 for node in G.nodes()}
 
         while processing_stack:
             popped_node = processing_stack.popleft()
@@ -321,11 +328,11 @@ def weighted_edge_betweenness_centrality(G: nx.Graph) -> Dict[Tuple[int, int], f
                     1 + dependency[popped_node]
                 )
 
-                edge_to_update: Tuple[int, int] = tuple(
-                    sorted(
-                        (predecessor, popped_node)
-                    )  # Ensures (small, large) order that Network X uses
-                )
+                edge_to_update: Tuple[Node, Node] = (predecessor, popped_node)
+                
+                if edge_to_update not in betweenness_centrality.keys():
+                    edge_to_update = (popped_node, predecessor)
+                
                 betweenness_centrality[
                     edge_to_update
                 ] += proportion_of_shortest_paths * (1 + dependency[popped_node])
