@@ -21,7 +21,7 @@ running it multiple times on the same graph will not yield the same solution. Co
 times and taking the average. 
 """
 
-def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
+def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph", benchmarking_mode: bool = False):
     """
     Main function to be called by main.py that runs the implementation of BVNS on
     a specified data set
@@ -30,17 +30,21 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
     G_to_pass = G.copy()
 
     bvns_communities = bvns(G_to_pass, kmax)
-    print("modularity: ", utils.modularity(immutable_G, bvns_communities))
-    utils.plot_graph_with_communities(immutable_G, bvns_communities)
+    
+    if not benchmarking_mode:
+        print("modularity: ", utils.modularity(immutable_G, bvns_communities))
+        utils.plot_graph_with_communities(immutable_G, bvns_communities)
 
-    merged_G = utils.merge_communities(immutable_G, bvns_communities)
+        merged_G = utils.merge_communities(immutable_G, bvns_communities)
 
-    utils.plot_graph_with_communities(
-        merged_G,
-        communities=[{node} for node in merged_G.nodes()],
-        label_edges=True,
-        title=f"{dataset_name} Communities Detected by our Implementation of Girvan-Newman",
-    )
+        utils.plot_graph_with_communities(
+            merged_G,
+            communities=[{node} for node in merged_G.nodes()],
+            label_edges=True,
+            title=f"{dataset_name} Communities Detected by our Implementation of Girvan-Newman",
+        )
+
+    return bvns_communities
 
 """
 This function runs bvns starting with a differing number of communities form 2-max_communities and
