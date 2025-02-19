@@ -1,5 +1,5 @@
 import sys
-sys.path.append("../Util")
+sys.path.append("../../Util")
 import utils
 import random
 import networkx as nx
