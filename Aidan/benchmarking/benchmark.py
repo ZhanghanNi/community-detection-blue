@@ -20,7 +20,7 @@ def run_louvain(graph):
     sys.path.append("../../Yang_Tan")
     import louvain_method_implementation as lm
 
-    return lm.main(graph)
+    return lm.main(graph, benchmarking_mode=True)
 
 def run_bvns(graph, kmax=3):
     sys.path.append("../../Jake/bvns")

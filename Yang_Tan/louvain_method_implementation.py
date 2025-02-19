@@ -15,7 +15,7 @@ def assign_uniform_weights(G: nx.Graph, weight: float = 1.0) -> None:
 
 
 
-def main(G: nx.Graph, dataset_name: str = "Graph")-> List[Set[int]]:
+def main(G: nx.Graph, dataset_name: str = "Graph", benchmarking_mode: bool = False)-> List[Set[int]]:
     #assign_uniform_weights(G, weight=1.0)
     # # Create a sample graph
     # G = nx.Graph()
@@ -61,22 +61,24 @@ def main(G: nx.Graph, dataset_name: str = "Graph")-> List[Set[int]]:
     #print(communities)
 
     # Plot the graph with communities
-    utils.plot_graph_with_communities(
-        G,
-        communities,
-        title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
-    )
-    merged_G = utils.merge_communities(
-        G,
-        communities,
-    )
-    #print("\nAfter merging:")
-    utils.plot_graph_with_communities(
-        merged_G,
-        communities=[{node} for node in merged_G.nodes()],
-        label_edges=True,
-        title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
-    )
+    if not benchmarking_mode:
+        utils.plot_graph_with_communities(
+            G,
+            communities,
+            title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
+        )
+        merged_G = utils.merge_communities(
+            G,
+            communities,
+        )
+        #print("\nAfter merging:")
+        utils.plot_graph_with_communities(
+            merged_G,
+            communities=[{node} for node in merged_G.nodes()],
+            label_edges=True,
+            title=f"{dataset_name} with Communities Detected by our Implementation of the Louvain Method",
+        )
+        
     return communities
 
 
