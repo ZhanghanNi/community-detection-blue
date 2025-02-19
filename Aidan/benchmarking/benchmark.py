@@ -125,22 +125,21 @@ if __name__ == "__main__":
     dataset: nx.Graph
     bvns_kmax = 3
 
-    match args.dataset:
-        case "karate_club":
-            dataset = nx.karate_club_graph()
-            bvns_kmax = 5
-        case "college_football":
-            dataset = nx.read_gml("../../Jake/football/football.gml")
-            bvns_kmax = 4
-        case "celegans_neural":
-            sys.path.append("../../Jake/neural_connectivity")
-            sys.path.append("../../Jake/bvns")  # Ensure bvns is on the path
+    if args.dataset == "karate_club":
+        dataset = nx.karate_club_graph()
+        bvns_kmax = 5
+    if args.dataset == "college_football":
+        dataset = nx.read_gml("../../Jake/football/football.gml")
+        bvns_kmax = 4
+    if args.dataset == "celegans_neural":
+        sys.path.append("../../Jake/neural_connectivity")
+        sys.path.append("../../Jake/bvns")  # Ensure bvns is on the path
 
-            import csv_to_nx_graph as csv_to_nx
+        import csv_to_nx_graph as csv_to_nx
 
-            dataset = csv_to_nx.get_neuronal_connectivity_graph(
-                "../../Jake/neural_connectivity/SI7_herm.csv"
-            )
+        dataset = csv_to_nx.get_neuronal_connectivity_graph(
+            "../../Jake/neural_connectivity/SI7_herm.csv"
+        )
 
     output_file = f"{args.dataset}_benchmark_results.csv"
 
