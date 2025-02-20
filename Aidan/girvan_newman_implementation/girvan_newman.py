@@ -45,7 +45,7 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool, max_communities: int
             optimal_communities = current_communities
 
         if max_communities > -1 and len(current_communities) == max_communities:
-            print(f"Final modularity (us): {current_modularity}")
+            # print(f"Final modularity (us): {current_modularity}")
 
             return current_communities
 
@@ -53,7 +53,7 @@ def girvan_newman(G: nx.Graph, immutable_G, weighted: bool, max_communities: int
         G.remove_edge(*edge_to_remove)
 
     # print(f"Final communities (us): {list(optimal_communities)}")
-    print(f"Final modularity (us): {max_modularity}")
+    # print(f"Final modularity (us): {max_modularity}")
 
     return optimal_communities
 

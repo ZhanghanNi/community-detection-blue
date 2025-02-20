@@ -7,6 +7,7 @@
         "./Jake",
         "./Jake",
         "./Jake/bvns",
-        "./Jake/football"
+        "./Jake/football",
+        "./Jake/neural_connectivity"
     ]
 }

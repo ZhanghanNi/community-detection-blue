@@ -246,6 +246,8 @@ if __name__ == "__main__":
     interm_sbm = random_sbm_scenarios(0.5, 10)
     dense_sbm = random_sbm_scenarios(0.8, 10)
 
+
+
     scenarios_sparse = sparse_ring + sparse_sbm
     scenarios_interm = interm_ring + interm_sbm
     scenarios_dense = dense_ring + dense_sbm

@@ -18,7 +18,13 @@ def main():
     communities = bvns.bvns(G, 2, stop_criterion=5)
     utils.plot_graph_with_communities(G, communities)
 
+def get_neuronal_connectivity_graph(file_path_from_caller: str = 'SI7_herm.csv') -> nx.Graph:
+    input_data = pd.read_csv(file_path_from_caller, index_col=0)  # Read the csv
+    input_data.columns = input_data.index # Get column and row names
+    input_data = input_data.apply(pd.to_numeric, errors="coerce").fillna(0) # Replace non-numeric entreis with 0
+
+    return nx.from_pandas_adjacency(input_data)
+
 
 if __name__ == "__main__":
     main()
-

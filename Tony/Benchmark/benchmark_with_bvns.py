@@ -12,6 +12,12 @@ from sklearn.metrics import adjusted_rand_score
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import matplotlib.pyplot as plt
 
+def run_bvns(G):
+    import sys
+    sys.path.append("../../Jake/bvns")
+    import bvns_implementation as bvns
+    return [set(lst) for lst in bvns.bvns(G)]
+
 def ring_of_cliques_density(num_cliques, clique_size):
     n = num_cliques * clique_size
     e = num_cliques * (clique_size * (clique_size - 1) // 2) + num_cliques
@@ -127,17 +133,21 @@ def measure_method(method_func, G):
     return partition, elapsed, mem_used
 
 def run_single_scenario(scenario):
-    stype, sname, args = scenario
+    density_label, stype, sname, args = scenario
     if stype == "ring_of_cliques":
         G, gt = generate_ring_of_cliques(*args)
     else:
         G, gt = generate_stochastic_block_model(args[0], args[1], args[2])
+
     n = G.number_of_nodes()
     e = G.number_of_edges()
+
     gnp, gnt, gnm = [], math.nan, math.nan
     lpp, lpt, lpm = [], math.nan, math.nan
     alpp, alpt, alpm = [], math.nan, math.nan
     lvp, lvt, lvm = [], math.nan, math.nan
+    bvpp, bvpt, bvpm = [], math.nan, math.nan
+
     try:
         gnp, gnt, gnm = measure_method(run_girvan_newman, G)
     except:
@@ -154,29 +164,44 @@ def run_single_scenario(scenario):
         lvp, lvt, lvm = measure_method(run_louvain, G)
     except:
         pass
+    # BVNS
+    try:
+        bvpp, bvpt, bvpm = measure_method(run_bvns, G)
+    except:
+        pass
 
     gm = condv = gtari = math.nan
     if gnp:
         gm = modularity(G, gnp)
         condv = conductance(G, gnp)
         gtari = ground_truth_overlap(gt, gnp)
+
     lpmod = lpcond = lparti = math.nan
     if lpp:
         lpmod = modularity(G, lpp)
         lpcond = conductance(G, lpp)
         lparti = ground_truth_overlap(gt, lpp)
+
     alpmod = alpcond = alparti = math.nan
     if alpp:
         alpmod = modularity(G, alpp)
         alpcond = conductance(G, alpp)
         alparti = ground_truth_overlap(gt, alpp)
+
     lvmod = lvcond = lvarti = math.nan
     if lvp:
         lvmod = modularity(G, lvp)
         lvcond = conductance(G, lvp)
         lvarti = ground_truth_overlap(gt, lvp)
 
+    bvmod = bvcond = bvarti = math.nan
+    if bvpp:
+        bvmod = modularity(G, bvpp)
+        bvcond = conductance(G, bvpp)
+        bvarti = ground_truth_overlap(gt, bvpp)
+
     return {
+        "ScenarioDensity": density_label,
         "ScenarioType": stype,
         "ScenarioName": sname,
         "NumNodes": n,
@@ -205,18 +230,62 @@ def run_single_scenario(scenario):
         "LV_Modularity": lvmod,
         "LV_Conductance": lvcond,
         "LV_GroundTruth": lvarti,
+        "BVNS_Communities": len(bvpp),
+        "BVNS_Time": bvpt,
+        "BVNS_Memory": bvpm,
+        "BVNS_Modularity": bvmod,
+        "BVNS_Conductance": bvcond,
+        "BVNS_GroundTruth": bvarti
     }
+
+# def random_ring_scenarios(target_density, count):
+#     scenarios = []
+#     tries = 0
+#     while len(scenarios) < count and tries < 50000:
+#         c = random.randint(2,50)
+#         k = random.randint(2,50)
+#         d = ring_of_cliques_density(c,k)
+#         if abs(d - target_density) < 0.02:
+#             name = f"RING_{int(target_density*100)}_{len(scenarios)+1}"
+#             scenarios.append(("ring_of_cliques", name, (c,k)))
+#         tries += 1
+#     return scenarios
+
+# def random_sbm_scenarios(target_density, count):
+#     scenarios = []
+#     tries = 0
+#     while len(scenarios) < count and tries < 50000:
+#         blocks = random.randint(2,5)
+#         sizes = [random.randint(5,40) for _ in range(blocks)]
+#         p_in = round(random.uniform(0.01,0.20),3)
+#         p_out = round(random.uniform(0.001,0.15),3)
+#         d = approximate_sbm_density(sizes, p_in, p_out)
+#         if abs(d - target_density) < 0.02:
+#             name = f"SBM_{int(target_density*100)}_{len(scenarios)+1}"
+#             scenarios.append(("sbm", name, (sizes, p_in, p_out)))
+#         tries += 1
+#     return scenarios
+
+
+def ring_of_cliques_density(num_cliques, clique_size):
+    n = num_cliques * clique_size
+    # Correct edge calculation: no ring edges if num_cliques == 1
+    intra_edges = num_cliques * (clique_size * (clique_size - 1) // 2)
+    ring_edges = num_cliques if num_cliques >= 2 else 0
+    e = intra_edges + ring_edges
+    return (2 * e) / (n * (n - 1)) if n > 1 else 0.0
 
 def random_ring_scenarios(target_density, count):
     scenarios = []
     tries = 0
     while len(scenarios) < count and tries < 50000:
-        c = random.randint(2,50)
-        k = random.randint(2,50)
-        d = ring_of_cliques_density(c,k)
+        # Allow c=1 to generate single-clique (high-density) scenarios
+        c = random.randint(1, 50)  # Changed from (2,50)
+        k = random.randint(2, 50)
+        d = ring_of_cliques_density(c, k)
         if abs(d - target_density) < 0.02:
             name = f"RING_{int(target_density*100)}_{len(scenarios)+1}"
-            scenarios.append(("ring_of_cliques", name, (c,k)))
+            scenarios.append(("ring_of_cliques", name, (c, k)))
         tries += 1
     return scenarios
 
@@ -224,10 +293,15 @@ def random_sbm_scenarios(target_density, count):
     scenarios = []
     tries = 0
     while len(scenarios) < count and tries < 50000:
-        blocks = random.randint(2,5)
-        sizes = [random.randint(5,40) for _ in range(blocks)]
-        p_in = round(random.uniform(0.01,0.20),3)
-        p_out = round(random.uniform(0.001,0.15),3)
+        blocks = random.randint(2, 5)
+        sizes = [random.randint(5, 40) for _ in range(blocks)]
+        # Adjust probability ranges based on target density
+        if target_density >= 0.5:
+            p_in = round(random.uniform(0.5, 1.0), 3)
+            p_out = round(random.uniform(0.3, 1.0), 3)
+        else:
+            p_in = round(random.uniform(0.01, 0.20), 3)
+            p_out = round(random.uniform(0.001, 0.15), 3)
         d = approximate_sbm_density(sizes, p_in, p_out)
         if abs(d - target_density) < 0.02:
             name = f"SBM_{int(target_density*100)}_{len(scenarios)+1}"
@@ -235,55 +309,73 @@ def random_sbm_scenarios(target_density, count):
         tries += 1
     return scenarios
 
+
+
 if __name__ == "__main__":
     random.seed(0)
 
-    sparse_ring = random_ring_scenarios(0.1, 100)
-    interm_ring = random_ring_scenarios(0.5, 100)
-    dense_ring = random_ring_scenarios(0.8, 100)
-
-    sparse_sbm = random_sbm_scenarios(0.1, 100)
-    interm_sbm = random_sbm_scenarios(0.5, 100)
-    dense_sbm = random_sbm_scenarios(0.8, 100)
+    sparse_ring = random_ring_scenarios(0.1, 50)
+    interm_ring = random_ring_scenarios(0.3, 50)
+    dense_ring = random_ring_scenarios(0.5, 50)
+    sparse_sbm = random_sbm_scenarios(0.1, 50)
+    interm_sbm = random_sbm_scenarios(0.5, 50)
+    dense_sbm = random_sbm_scenarios(0.8, 50)
+    print(len(sparse_ring))
+    print(len(sparse_sbm))
+    print(len(interm_ring))
+    print(len(interm_sbm))
+    print(len(dense_ring))
+    print(len(dense_sbm))
 
     scenarios_sparse = sparse_ring + sparse_sbm
     scenarios_interm = interm_ring + interm_sbm
     scenarios_dense = dense_ring + dense_sbm
 
     all_scenarios = [
-        ("SPARSE", scenarios_sparse),
-        ("INTERMEDIATE", scenarios_interm),
-        ("DENSE", scenarios_dense),
+        ("SPARSE", scenario[0], scenario[1], scenario[2]) for scenario in scenarios_sparse
+    ] + [
+        ("INTERMEDIATE", scenario[0], scenario[1], scenario[2]) for scenario in scenarios_interm
+    ] + [
+        ("DENSE", scenario[0], scenario[1], scenario[2]) for scenario in scenarios_dense
     ]
 
+    print(len(all_scenarios))
+
     fnames = [
-        "ScenarioType","ScenarioName","NumNodes","NumEdges",
+        "ScenarioDensity","ScenarioType","ScenarioName","NumNodes","NumEdges",
         "GN_Communities","GN_Time","GN_Memory","GN_Modularity","GN_Conductance","GN_GroundTruth",
         "LP_Communities","LP_Time","LP_Memory","LP_Modularity","LP_Conductance","LP_GroundTruth",
         "ALP_Communities","ALP_Time","ALP_Memory","ALP_Modularity","ALP_Conductance","ALP_GroundTruth",
-        "LV_Communities","LV_Time","LV_Memory","LV_Modularity","LV_Conductance","LV_GroundTruth"
+        "LV_Communities","LV_Time","LV_Memory","LV_Modularity","LV_Conductance","LV_GroundTruth",
+        "BVNS_Communities","BVNS_Time","BVNS_Memory","BVNS_Modularity","BVNS_Conductance","BVNS_GroundTruth"
     ]
 
     master_results = []
-    with open("benchmark_log.csv", "w", newline="", buffering=1) as c:
-        w = csv.DictWriter(c, fieldnames=fnames)
+    with open("benchmark_log_t_nb_1.csv", "w", newline="", buffering=1) as csvfile:
+        w = csv.DictWriter(csvfile, fieldnames=fnames)
         w.writeheader()
-        for density_label, scenario_list in all_scenarios:
-            print(f"Running {density_label} group with {len(scenario_list)} scenarios...")
-            with ProcessPoolExecutor(max_workers=40) as ex:
-                futs = {ex.submit(run_single_scenario, s): s for s in scenario_list}
-                idx = 1
-                for f in as_completed(futs):
+
+        with ProcessPoolExecutor(max_workers=50) as executor:
+            future_to_scenario = {
+                executor.submit(run_single_scenario, scn): scn
+                for scn in all_scenarios
+            }
+            idx = 1
+            for f in as_completed(future_to_scenario):
+                scenario = future_to_scenario[f]
+                try:
                     row = f.result()
-                    row["ScenarioType"] = density_label
-                    w.writerow(row)
-                    master_results.append(row)
-                    print(f"[{idx}/{len(scenario_list)}] {row['ScenarioName']} in {density_label} done")
-                    idx += 1
+                except Exception as e:
+                    print(f"[ERROR] Scenario {scenario}: {e}")
+                    continue
+                w.writerow(row)
+                master_results.append(row)
+                print(f"[{idx}/{len(all_scenarios)}] {row['ScenarioName']} - {row['ScenarioDensity']} done")
+                idx += 1
 
     group_to_data = {"SPARSE": [], "INTERMEDIATE": [], "DENSE": []}
     for r in master_results:
-        group_to_data[r["ScenarioType"]].append(r)
+        group_to_data[r["ScenarioDensity"]].append(r)
 
     for label in ["SPARSE","INTERMEDIATE","DENSE"]:
         data = group_to_data[label]
@@ -296,6 +388,9 @@ if __name__ == "__main__":
         m_ring_alp = []
         t_ring_lv = []
         m_ring_lv = []
+        t_ring_bvns = []
+        m_ring_bvns = []
+
         x_sbm = []
         t_sbm_gn = []
         m_sbm_gn = []
@@ -305,6 +400,9 @@ if __name__ == "__main__":
         m_sbm_alp = []
         t_sbm_lv = []
         m_sbm_lv = []
+        t_sbm_bvns = []
+        m_sbm_bvns = []
+
         for r in data:
             if "RING" in r["ScenarioName"]:
                 x_ring.append(r["NumEdges"])
@@ -316,6 +414,8 @@ if __name__ == "__main__":
                 m_ring_alp.append(r["ALP_Memory"])
                 t_ring_lv.append(r["LV_Time"])
                 m_ring_lv.append(r["LV_Memory"])
+                t_ring_bvns.append(r["BVNS_Time"])
+                m_ring_bvns.append(r["BVNS_Memory"])
             else:
                 x_sbm.append(r["NumEdges"])
                 t_sbm_gn.append(r["GN_Time"])
@@ -326,16 +426,22 @@ if __name__ == "__main__":
                 m_sbm_alp.append(r["ALP_Memory"])
                 t_sbm_lv.append(r["LV_Time"])
                 m_sbm_lv.append(r["LV_Memory"])
+                t_sbm_bvns.append(r["BVNS_Time"])
+                m_sbm_bvns.append(r["BVNS_Memory"])
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,5))
+
         ax1.scatter(x_ring, t_ring_gn, marker='o', label='Ring GN')
         ax1.scatter(x_ring, t_ring_lp, marker='o', label='Ring LP')
         ax1.scatter(x_ring, t_ring_alp, marker='o', label='Ring ALP')
         ax1.scatter(x_ring, t_ring_lv, marker='o', label='Ring LV')
+        ax1.scatter(x_ring, t_ring_bvns, marker='o', label='Ring BVNS')
+
         ax1.scatter(x_sbm, t_sbm_gn, marker='x', label='SBM GN')
         ax1.scatter(x_sbm, t_sbm_lp, marker='x', label='SBM LP')
         ax1.scatter(x_sbm, t_sbm_alp, marker='x', label='SBM ALP')
         ax1.scatter(x_sbm, t_sbm_lv, marker='x', label='SBM LV')
+        ax1.scatter(x_sbm, t_sbm_bvns, marker='x', label='SBM BVNS')
         ax1.set_xlabel("Number of Edges")
         ax1.set_ylabel("Time (s)")
         ax1.set_title(f"{label} Time")
@@ -345,15 +451,18 @@ if __name__ == "__main__":
         ax2.scatter(x_ring, m_ring_lp, marker='o', label='Ring LP')
         ax2.scatter(x_ring, m_ring_alp, marker='o', label='Ring ALP')
         ax2.scatter(x_ring, m_ring_lv, marker='o', label='Ring LV')
+        ax2.scatter(x_ring, m_ring_bvns, marker='o', label='Ring BVNS')
+
         ax2.scatter(x_sbm, m_sbm_gn, marker='x', label='SBM GN')
         ax2.scatter(x_sbm, m_sbm_lp, marker='x', label='SBM LP')
         ax2.scatter(x_sbm, m_sbm_alp, marker='x', label='SBM ALP')
         ax2.scatter(x_sbm, m_sbm_lv, marker='x', label='SBM LV')
+        ax2.scatter(x_sbm, m_sbm_bvns, marker='x', label='SBM BVNS')
         ax2.set_xlabel("Number of Edges")
         ax2.set_ylabel("Memory Usage (bytes)")
         ax2.set_title(f"{label} Memory")
         ax2.legend()
 
         plt.tight_layout()
-        plt.savefig(f"time_memory_{label.lower()}.png")
+        plt.savefig(f"time_memory_{label.lower()}_nb_1.png")
         plt.close()

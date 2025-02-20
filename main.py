@@ -15,10 +15,12 @@ sys.path.append("Yang_Tan")
 sys.path.append("Tony/PPI")
 sys.path.append("Jake/bvns")
 sys.path.append("Jake/football")
+sys.path.append("Jake/neural_connectivity")
 import girvan_newman_implementation as gn
 import louvain_method_implementation as lm
 import bvns_implementation as bvns
 import comparing_to_football_results as fr
+import csv_to_nx_graph as csv_to_nx
 import run_eval
 
 Node = Union[int, str]
@@ -58,18 +60,19 @@ def main():
     dataset_name: str
     bvns_kmax: int = 3
 
-    match args.dataset:
-        case "karate_club":
-            dataset_name = "Karate Club"
-            dataset = nx.karate_club_graph()
-            bvns_kmax = 5
-        case "college_football":
-            dataset_name = "College Football"
-            dataset = nx.read_gml("Jake/football/football.gml")
-            bvns_kmax = 4
-        case "celegans_neural":
-            dataset_name = "Neural network of the nematode C. Elegans"
-            dataset = nx.read_gml("Jake/celegansneural/celegansneural.gml")
+    if args.dataset == "karate_club":
+        dataset_name = "Karate Club"
+        dataset = nx.karate_club_graph()
+        bvns_kmax = 5
+    if args.dataset == "college_football":
+        dataset_name = "College Football"
+        dataset = nx.read_gml("Jake/football/football.gml")
+        bvns_kmax = 4
+    if args.dataset == "celegans_neural":
+        dataset_name = "Neural network of the nematode C. Elegans"
+        dataset = csv_to_nx.get_neuronal_connectivity_graph(
+            "Jake/neural_connectivity/SI7_herm.csv"
+        )
 
     match args.algorithm:
         case "girvan_newman":
