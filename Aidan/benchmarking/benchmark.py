@@ -26,7 +26,7 @@ def run_bvns(graph, kmax=3):
     sys.path.append("../../Jake/bvns")
     import bvns_implementation as bvns
 
-    return bvns.main(graph, kmax=kmax, benchmarking_mode=True)
+    return bvns.bvns(graph, kmax=kmax)
 
 def measure_performance(algorithm, graph, kmax=3):
     process = psutil.Process(os.getpid())

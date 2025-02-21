@@ -31,7 +31,12 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
 
     bvns_communities = bvns(G_to_pass, kmax)
     print("modularity: ", utils.modularity(immutable_G, bvns_communities))
-    utils.plot_graph_with_communities(immutable_G, bvns_communities)
+    utils.plot_graph_with_communities(
+        immutable_G,
+        bvns_communities,
+        label_edges=True,
+        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
+    )
 
     merged_G = utils.merge_communities(immutable_G, bvns_communities)
 
@@ -39,7 +44,7 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
         merged_G,
         communities=[{node} for node in merged_G.nodes()],
         label_edges=True,
-        title=f"{dataset_name} Communities Detected by our Implementation of Girvan-Newman",
+        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
     )
 
 """
