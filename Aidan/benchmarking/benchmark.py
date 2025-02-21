@@ -145,7 +145,7 @@ if __name__ == "__main__":
             "../../Jake/neural_connectivity/SI7_herm.csv"
         )
 
-    output_file = f"{args.dataset}_benchmark_results_2.csv"
+    output_file = f"final_{args.dataset}_benchmark_results.csv"
 
     fieldnames = [
         "NumNodes",
