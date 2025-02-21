@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
     if args.dataset == "karate_club":
         dataset = nx.karate_club_graph()
-        bvns_kmax = 5
+        bvns_kmax = 4
     if args.dataset == "college_football":
         dataset = nx.read_gml("../../Jake/football/football.gml")
         bvns_kmax = 4
