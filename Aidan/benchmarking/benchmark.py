@@ -28,16 +28,29 @@ def run_bvns(graph, kmax=3):
 
     return bvns.bvns(graph, kmax=kmax)
 
+
 def measure_performance(algorithm, graph, kmax=3):
+    def total_memory_usage(proc):
+        # Get the memory for the process itself.
+        mem = proc.memory_info().rss
+        # Add the memory of any live children (recursively).
+        for child in proc.children(recursive=True):
+            try:
+                mem += child.memory_info().rss
+            except psutil.NoSuchProcess:
+                # Child might have finished between the time of listing and measurement.
+                pass
+        return mem
+
     process = psutil.Process(os.getpid())
-    memory_before = process.memory_info().rss
+    memory_before = total_memory_usage(process)
     start_time = time.time()
     if algorithm == run_bvns:
         partition = algorithm(graph, kmax)
     else:
         partition = algorithm(graph)
     elapsed_time = time.time() - start_time
-    memory_after = process.memory_info().rss
+    memory_after = total_memory_usage(process)
     memory_used = memory_after - memory_before
     return partition, elapsed_time, memory_used
 
@@ -141,7 +154,7 @@ if __name__ == "__main__":
             "../../Jake/neural_connectivity/SI7_herm.csv"
         )
 
-    output_file = f"{args.dataset}_benchmark_results.csv"
+    output_file = f"aidan_computer_{args.dataset}_benchmark_results_2.csv"
 
     fieldnames = [
         "NumNodes",
