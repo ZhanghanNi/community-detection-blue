@@ -68,11 +68,14 @@ def bvns(graph, kmax=3, max_communities=None, stop_criterion=100):
 """
 This function runs bvns on a set number of communities
 """
-def bvns_with_communities_specified(graph, num_communities, kmax=3, stop_criterion=100):
+def bvns_with_communities_specified(graph, num_communities=None, kmax=3, stop_criterion=100):
+    if num_communities is None:
+        num_communities = int(len(graph.nodes) ** 0.5) + 1
     # Start with a random solution
     random_groups = random_grouping(graph, num_communities)
     best_modulartiy = utils.modularity(graph, random_groups)
     current_best_communities = random_groups
+    
     
     # Assuming stop_criterion is an int
     for _ in range(stop_criterion):
@@ -85,7 +88,7 @@ def bvns_with_communities_specified(graph, num_communities, kmax=3, stop_criteri
         if local_modularity > best_modulartiy:
             current_best_communities = local_best
             best_modulartiy = local_modularity
-    return current_best_communities
+    return utils.remove_empty_communities(current_best_communities)
 
 """
 This function creates a random partition of nodes into a given number of communities.

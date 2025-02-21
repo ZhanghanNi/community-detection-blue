@@ -26,7 +26,7 @@ def run_bvns(graph, kmax=3):
     sys.path.append("../../Jake/bvns")
     import bvns_implementation as bvns
 
-    return bvns.bvns(graph, kmax=kmax)
+    return bvns.bvns_with_communities_specified(graph, kmax=kmax)
 
 
 def measure_performance(algorithm, graph, kmax=3):
