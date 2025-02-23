@@ -21,7 +21,7 @@ running it multiple times on the same graph will not yield the same solution. Co
 times and taking the average. 
 """
 
-def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph", benchmarking_mode: bool = False):
+def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
     """
     Main function to be called by main.py that runs the implementation of BVNS on
     a specified data set
@@ -30,21 +30,22 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph", benchmarking_m
     G_to_pass = G.copy()
 
     bvns_communities = bvns(G_to_pass, kmax)
-    
-    if not benchmarking_mode:
-        print("modularity: ", utils.modularity(immutable_G, bvns_communities))
-        utils.plot_graph_with_communities(immutable_G, bvns_communities)
+    print("modularity: ", utils.modularity(immutable_G, bvns_communities))
+    utils.plot_graph_with_communities(
+        immutable_G,
+        bvns_communities,
+        label_edges=True,
+        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
+    )
 
-        merged_G = utils.merge_communities(immutable_G, bvns_communities)
+    merged_G = utils.merge_communities(immutable_G, bvns_communities)
 
-        utils.plot_graph_with_communities(
-            merged_G,
-            communities=[{node} for node in merged_G.nodes()],
-            label_edges=True,
-            title=f"{dataset_name} Communities Detected by our Implementation of Girvan-Newman",
-        )
-
-    return bvns_communities
+    utils.plot_graph_with_communities(
+        merged_G,
+        communities=[{node} for node in merged_G.nodes()],
+        label_edges=True,
+        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
+    )
 
 """
 This function runs bvns starting with a differing number of communities form 2-max_communities and
@@ -67,11 +68,14 @@ def bvns(graph, kmax=3, max_communities=None, stop_criterion=100):
 """
 This function runs bvns on a set number of communities
 """
-def bvns_with_communities_specified(graph, num_communities, kmax=3, stop_criterion=100):
+def bvns_with_communities_specified(graph, num_communities=None, kmax=3, stop_criterion=100):
+    if num_communities is None:
+        num_communities = int(len(graph.nodes) ** 0.5) + 1
     # Start with a random solution
     random_groups = random_grouping(graph, num_communities)
     best_modulartiy = utils.modularity(graph, random_groups)
     current_best_communities = random_groups
+    
     
     # Assuming stop_criterion is an int
     for _ in range(stop_criterion):
@@ -84,7 +88,7 @@ def bvns_with_communities_specified(graph, num_communities, kmax=3, stop_criteri
         if local_modularity > best_modulartiy:
             current_best_communities = local_best
             best_modulartiy = local_modularity
-    return current_best_communities
+    return utils.remove_empty_communities(current_best_communities)
 
 """
 This function creates a random partition of nodes into a given number of communities.
@@ -135,10 +139,16 @@ def change_communities(graph, communities, k):
                 break
         communities_out[community_num].remove(node)
         # Choose a different one to move it to (skipping community_num so it doesn't go back to the same community)
-        new_community = random.randint(0, len(communities_out) -2)
+        # This would be len(communities_out) -2, but we want to include a new empty community as a possibility
+        new_community = random.randint(0, len(communities_out) -1)
+        # Avoid choosing the original community
         if new_community >= community_num:
             new_community += 1
-        communities_out[new_community].append(node)
+        if new_community >= len(communities):
+            # If the chosen number isn't a community, create a new one
+            communities_out.append([node])
+        else:
+            communities_out[new_community].append(node)
     return communities_out
 
 
@@ -161,6 +171,15 @@ def local_search(graph, communities, kmax=1):
                     new_communities[j].append(node)
                     new_modularity = utils.modularity(graph, new_communities)
                     if new_modularity > best_modularity:
+                        best_modularity = new_modularity
+                        best_communities = copy.deepcopy(new_communities)
+            # Also try moving node to a new community
+            new_communities = copy.deepcopy(communities)
+            new_communities[i].remove(node)
+            # Add a new community with just node
+            new_communities.append([node])
+            new_modularity = utils.modularity(graph, new_communities)
+            if new_modularity > best_modularity:
                         best_modularity = new_modularity
                         best_communities = copy.deepcopy(new_communities)
     return best_communities

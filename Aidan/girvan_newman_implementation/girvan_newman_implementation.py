@@ -87,8 +87,8 @@ def main(
         #     f"Is our final result equal to Network X's? \n {girvan_newman_communities == list(network_x_iteration_with_highest_modularity)}"
         # )
 
-        print(f"Final Communities (us): {girvan_newman_communities}")
-
+    #print(f"Final Communities (us): {girvan_newman_communities}")
+    
     return girvan_newman_communities
 
 def find_network_x_communities_with_highest_modularity(

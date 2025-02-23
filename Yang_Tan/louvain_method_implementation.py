@@ -50,7 +50,7 @@ def main(G: nx.Graph, dataset_name: str = "Graph", benchmarking_mode: bool = Fal
    # for u, v, data in G.edges(data=True):
      #   print(f"({u}, {v}) - weight: {data['weight']}")
     # Apply Louvain method
-    communities = lm.louvain_method(G)
+    communities = lm.louvain_method(G, 1)
     #print(communities)
 
     # Print the detected communities

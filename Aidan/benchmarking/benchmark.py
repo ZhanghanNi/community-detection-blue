@@ -7,7 +7,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import csv
 import argparse
 import sys
-
+import tracemalloc
 
 def run_girvan_newman(graph):
     sys.path.append("../girvan_newman_implementation")
@@ -26,21 +26,25 @@ def run_bvns(graph, kmax=3):
     sys.path.append("../../Jake/bvns")
     import bvns_implementation as bvns
 
-    return bvns.main(graph, kmax=kmax, benchmarking_mode=True)
+    return bvns.bvns_with_communities_specified(graph, kmax=kmax)
+
 
 def measure_performance(algorithm, graph, kmax=3):
-    process = psutil.Process(os.getpid())
-    memory_before = process.memory_info().rss
+    tracemalloc.start()
     start_time = time.time()
+    
     if algorithm == run_bvns:
         partition = algorithm(graph, kmax)
     else:
         partition = algorithm(graph)
+    
     elapsed_time = time.time() - start_time
-    memory_after = process.memory_info().rss
-    memory_used = memory_after - memory_before
+    # Get the current and peak memory usage (in bytes) during the tracing period.
+    current, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    
+    memory_used = peak  # Using the peak memory usage as the metric.
     return partition, elapsed_time, memory_used
-
 
 def run_benchmark(graph: nx.Graph, kmax=3):
     num_nodes = graph.number_of_nodes()
@@ -127,7 +131,7 @@ if __name__ == "__main__":
 
     if args.dataset == "karate_club":
         dataset = nx.karate_club_graph()
-        bvns_kmax = 5
+        bvns_kmax = 4
     if args.dataset == "college_football":
         dataset = nx.read_gml("../../Jake/football/football.gml")
         bvns_kmax = 4
@@ -141,7 +145,7 @@ if __name__ == "__main__":
             "../../Jake/neural_connectivity/SI7_herm.csv"
         )
 
-    output_file = f"{args.dataset}_benchmark_results.csv"
+    output_file = f"final_{args.dataset}_benchmark_results.csv"
 
     fieldnames = [
         "NumNodes",

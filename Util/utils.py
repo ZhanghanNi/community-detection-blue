@@ -87,28 +87,32 @@ def plot_graph_with_communities(
 ):
     """
     Plot the graph with nodes colored according to their communities.
-
-    Parameters:
-    - G: The graph.
-    - communities: The list of communities.
-
-    Authors: Yang Tan, Aidan Roessler
     """
-    # Assign a color to each community
-    community_colors = {}
-    for idx, community in enumerate(communities):
+
+    # First, pick one color per community so that
+    # we don't rely on the (different) default color normalization.
+    # If there are k communities, we want colors at 0, 1/(k-1), 2/(k-1), ...
+    community_count = len(communities)
+
+    denominator = max(
+        community_count - 1, 1
+    )  # Avoid dividing by zero if we have one community
+
+    # Compute the color for each community exactly once
+    community_color_map = [plt.cm.rainbow(i / denominator) for i in range(community_count)]
+
+    # Map each node to the color of its community
+    node_to_color = {}
+    for i, community in enumerate(communities):
         for node in community:
-            community_colors[node] = idx
+            node_to_color[node] = community_color_map[i]
 
-    # Create a list of node colors based on the community
-    node_colors = [community_colors[node] for node in G.nodes()]
+    node_colors = [node_to_color[node] for node in G.nodes()]
 
-    # Plot the graph
+    # Draw the graph
     plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(G, seed=1234)  # positions for all nodes
-    nx.draw_networkx_nodes(
-        G, pos, node_color=node_colors, cmap=plt.cm.rainbow, node_size=500
-    )
+    pos = nx.spring_layout(G, seed=1234)
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=500)
     nx.draw_networkx_edges(G, pos, alpha=0.5)
     nx.draw_networkx_labels(G, pos, font_size=12, font_weight="bold")
 
@@ -119,14 +123,10 @@ def plot_graph_with_communities(
 
     # Create legend for communities
     community_patches = []
-    for idx, community in enumerate(communities):
-        # Each community will have a unique color
-        patch = mpatches.Patch(
-            color=plt.cm.rainbow(idx / len(communities)), label=f"Community {idx + 1}"
-        )
+    for i in range(community_count):
+        patch = mpatches.Patch(color=community_color_map[i], label=f"Community {i + 1}")
         community_patches.append(patch)
 
-    # Adjust the position of the legend to avoid covering the graph
     plt.legend(
         handles=community_patches,
         loc="upper left",
@@ -134,10 +134,7 @@ def plot_graph_with_communities(
         title="Communities",
     )
 
-    # Adjust layout to make space for the legend
     plt.tight_layout()
-
-    # Show the plot
     plt.title(title)
     plt.show()
 

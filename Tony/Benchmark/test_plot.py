@@ -2,7 +2,7 @@ import csv
 import matplotlib.pyplot as plt
 
 master_results = []
-with open("benchmark_log_t_nb_1.csv", "r", newline="") as csvfile:
+with open("benchmark_log_withNX.csv", "r", newline="") as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         master_results.append(row)
