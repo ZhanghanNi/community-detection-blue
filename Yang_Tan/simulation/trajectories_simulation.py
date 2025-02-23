@@ -22,7 +22,7 @@ class AreaSplitter:
         new_vertices = vor.vertices.tolist()
         center = vor.points.mean(axis=0)
         if radius is None:
-            radius = vor.points.ptp().max() * 2
+            radius = np.ptp(vor.points, axis = 0).max() * 2
 
         all_ridges = {}
         for (p1, p2), (v1, v2) in zip(vor.ridge_points, vor.ridge_vertices):
@@ -104,11 +104,13 @@ class Area:
         return x_min <= point.x <= x_max and y_min <= point.y <= y_max
 
 class Trajectory:
-    def __init__(self, moving_object, k, step_size):
+    def __init__(self, moving_object, k, step_size, a, b):
         self.moving_object = moving_object
         self.points = []
         self.k = k
         self.step_size = step_size
+        self.a = a
+        self.b = b
         self.generate_trajectory()
     
     def move(self, point):
@@ -116,12 +118,19 @@ class Trajectory:
         circle_x = point.x + self.step_size * np.cos(angle)
         circle_y = point.y + self.step_size * np.sin(angle)
         new_point = Point(circle_x, circle_y)
-
+        max_attempts = 100  # Prevent infinite loops
         # 10% chance to move anywhere in the circle
         if random.random() < 0.1:
-            return new_point  
+            for _ in range(max_attempts):
+                if 0 <= new_point.x <= self.a and 0 <= new_point.y <= self.b:
+                    return new_point  # Found a valid 
+             # Generate a new random point
+            angle = random.uniform(0, 2 * np.pi)
+            circle_x = point.x + self.step_size * np.cos(angle)
+            circle_y = point.y + self.step_size * np.sin(angle)
+            new_point = Point(circle_x, circle_y)
 
-        max_attempts = 100  # Prevent infinite loops
+
         for _ in range(max_attempts):
             for area in self.moving_object.assigned_areas:
                 if area.contains(new_point):
@@ -144,9 +153,9 @@ class Trajectory:
             self.points.append(current_point)
 
 class MovingObject:
-    def __init__(self, assigned_areas, k, step_size):
+    def __init__(self, assigned_areas, k, step_size, a, b):
         self.assigned_areas = assigned_areas  # Now stores a list of areas
-        self.trajectory = Trajectory(self, k, step_size)
+        self.trajectory = Trajectory(self, k, step_size, a, b)
     
     def random_point_in_area(self):
         area = random.choice(self.assigned_areas)
@@ -172,7 +181,7 @@ def create_study_area(a=100, b=100, n=2, m=20, k=50, step_size=float('inf')):
             assigned_area = [sub_areas[2 * (i  % num)], sub_areas[2 * (i  % num)+1]]
         
         for _ in range(m):
-            moving_obj = MovingObject(assigned_area, k, step_size)
+            moving_obj = MovingObject(assigned_area, k, step_size, a, b)
             moving_objects.append(moving_obj)
             print(f"object{_}:")
     
