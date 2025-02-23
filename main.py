@@ -19,8 +19,8 @@ sys.path.append("Jake/neural_connectivity")
 import girvan_newman_implementation as gn
 import louvain_method_implementation as lm
 import bvns_implementation as bvns
-import comparing_to_football_results as fr
-import csv_to_nx_graph as csv_to_nx
+import comparing_to_football_results as football_results
+import undirected_neural_data
 import run_eval
 
 Node = Union[int, str]
@@ -70,8 +70,8 @@ def main():
         bvns_kmax = 4
     if args.dataset == "celegans_neural":
         dataset_name = "Neural network of the nematode C. Elegans"
-        dataset = csv_to_nx.get_neuronal_connectivity_graph(
-            "Jake/neural_connectivity/SI7_herm.csv"
+        dataset = undirected_neural_data.get_neuronal_connectivity_graph(
+            "Jake/neural_connectivity/symmetric_combined.csv"
         )
 
     match args.algorithm:
@@ -99,7 +99,7 @@ def main():
 
             if dataset_name == "College Football":
                 college_football_ground_truth_communities = (
-                    fr.find_football_truth_values()
+                    football_results.find_football_truth_values()
                 )
 
                 ten_communities = gn.main(
@@ -119,11 +119,11 @@ def main():
                     nx.karate_club_graph(), seed=1234
                 )
 
-            print(f"Final Communities (Network X): {network_x_communities}")
+                print(f"Final Communities (Network X): {network_x_communities}")
 
-            print(
-                f"Is our final result equal to Network X's? \n {generated_communities == network_x_communities}"
-            )
+                print(
+                    f"Is our final result equal to Network X's? \n {generated_communities == network_x_communities}"
+                )
 
         case "bvns":
             bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)

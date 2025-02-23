@@ -139,10 +139,10 @@ if __name__ == "__main__":
         sys.path.append("../../Jake/neural_connectivity")
         sys.path.append("../../Jake/bvns")  # Ensure bvns is on the path
 
-        import csv_to_nx_graph as csv_to_nx
+        import undirected_neural_data
 
-        dataset = csv_to_nx.get_neuronal_connectivity_graph(
-            "../../Jake/neural_connectivity/SI7_herm.csv"
+        dataset = undirected_neural_data.get_neuronal_connectivity_graph(
+            "../../Jake/neural_connectivity/symmetric_combined.csv"
         )
 
     output_file = f"final_{args.dataset}_benchmark_results.csv"
