@@ -169,7 +169,6 @@ def main(benchmarking_mode = False):
      # Generate graphs from moving_objects using our Graph_Trajectory_Generator
     graph_generator = Graph_Trajectory_Generator(moving_objects, k)
     
-    
     if not benchmarking_mode:
         # Visualize both graphs with subareas overlaid
         visualize_graphs(graph_generator.graph, graph_generator.merged_graph, sub_areas, a, b)

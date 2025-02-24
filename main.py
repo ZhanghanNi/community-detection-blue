@@ -61,6 +61,7 @@ def main():
     args = parser.parse_args()
     dataset: nx.Graph
     dataset_name: str
+    algorithm_name: str
     bvns_kmax: int = 3
     generated_communities = [] 
     subareas_for_urban_movement = []
@@ -88,6 +89,8 @@ def main():
 
     match args.algorithm:
         case "girvan_newman":
+            algorithm_name = "Girvan Newman"
+            
             generated_communities = gn.main(
                 dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
             )
@@ -123,6 +126,8 @@ def main():
                 )
 
         case "louvain_method":
+            algorithm_name = "Louvain Method"
+            
             generated_communities = lm.main(dataset, dataset_name=dataset_name)
 
             if dataset_name == "Karate Club":
@@ -137,12 +142,14 @@ def main():
                 )
 
         case "bvns":
+            algorithm_name = "BVNS"
+            
             generated_communities = bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)
     
     # Plot additional visualizations for urban movement that are dependent on communities
     if args.dataset == "urban_movement_synthetic":
-        # Last two parameters here are a and b, the x-axis and y-axis ranges
-        result_analysis = trajectory_experiment.Result_Analysis(dataset, generated_communities, subareas_for_urban_movement, 100, 100)
+        # a and b parameters are the x-axis and y-axis ranges
+        result_analysis = trajectory_experiment.Result_Analysis(dataset, generated_communities, subareas_for_urban_movement, 100, 100, algorithm_name)
         result_analysis.plot_results()
 
 if __name__ == "__main__":

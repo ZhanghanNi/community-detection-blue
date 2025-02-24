@@ -10,5 +10,6 @@
         "./Jake/football",
         "./Jake/neural_connectivity",
         "./Yang_Tan/simulation"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "off"
 }

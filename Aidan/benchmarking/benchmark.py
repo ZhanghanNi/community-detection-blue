@@ -9,6 +9,9 @@ import argparse
 import sys
 import tracemalloc
 
+sys.path.append("../../Yang_Tan/simulation")
+import trajectory_experiment
+
 def run_girvan_newman(graph):
     sys.path.append("../girvan_newman_implementation")
     import girvan_newman_implementation as gn
@@ -128,6 +131,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     dataset: nx.Graph
     bvns_kmax = 3
+    subareas_for_urban_movement = []
 
     if args.dataset == "karate_club":
         dataset = nx.karate_club_graph()
@@ -148,7 +152,7 @@ if __name__ == "__main__":
         sys.path.append("Yang_Tan/simulation")
         import trajectory_graph_generator
         
-        dataset = trajectory_graph_generator.main()
+        dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
 
     output_file = f"final_{args.dataset}_benchmark_results.csv"
 
@@ -179,5 +183,13 @@ if __name__ == "__main__":
                 result = future.result()
                 writer.writerow(result)
                 print("Benchmarking complete. Results saved to", output_file)
+                # Visualize Final Results for Urban Movement synthetic data
+                # if args.dataset == "karate_club":
+                #     print(f"G-N communities: {result["GN_Final_Communities"]}")
+                #     print(f"Louvain communities: {result["LV_Final_Communities"]}")
+                #     print(f"BVNS_Final_Communities: {result["BVNS_Final_Communities"]}")
+                if args.dataset == "urban_movement_synthetic":
+                    print("Visualizing Urban Movement Results")
+                    girvan_newman_result_analysis = trajectory_experiment.Result_Analysis(dataset, result["GN_Final_Communities"], subareas_for_urban_movement, 100, 100, "Girvan Newman")
             except Exception as e:
                 print(f"Error in benchmark execution: {e}")
