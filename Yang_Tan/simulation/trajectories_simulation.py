@@ -104,10 +104,10 @@ class Area:
         return x_min <= point.x <= x_max and y_min <= point.y <= y_max
 
 class Trajectory:
-    def __init__(self, moving_object, k, step_size, a, b):
+    def __init__(self, moving_object, h, step_size, a, b):
         self.moving_object = moving_object
         self.points = []
-        self.k = k
+        self.h = h
         self.step_size = step_size
         self.a = a
         self.b = b
@@ -148,7 +148,7 @@ class Trajectory:
     def generate_trajectory(self):
         current_point = self.moving_object.random_point_in_area()
         self.points.append(current_point)
-        for _ in range(self.k - 1):
+        for _ in range(self.h - 1):
             current_point = self.move(current_point)
             self.points.append(current_point)
 
@@ -231,18 +231,4 @@ def visualize(moving_objects, sub_areas, a, b):
     plt.show()
 
 
-def main():
-    # Set parameters
-    a = 100  # x-axis range
-    b = 100  # y-axis range
-    n = 3  # number of sub-areas
-    m = 20  # number of points per sub-area
-    k = 20  # steps in each trajectory
-    step_size = 20  # maximum step size for trajectories
 
-    # Create study area and generate points
-    sub_areas, moving_objects = create_study_area(a, b, n, m, k, step_size)
-    visualize(moving_objects, sub_areas, a, b)
-
-if __name__ == "__main__":
-    main()
