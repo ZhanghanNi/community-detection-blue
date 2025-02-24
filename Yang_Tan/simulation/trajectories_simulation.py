@@ -111,6 +111,7 @@ class Trajectory:
         self.step_size = step_size
         self.a = a
         self.b = b
+        self.max_attempts = 1000  # Prevent infinite loops
         self.generate_trajectory()
     
     def move(self, point):
@@ -118,10 +119,9 @@ class Trajectory:
         circle_x = point.x + self.step_size * np.cos(angle)
         circle_y = point.y + self.step_size * np.sin(angle)
         new_point = Point(circle_x, circle_y)
-        max_attempts = 100  # Prevent infinite loops
         # 10% chance to move anywhere in the circle
         if random.random() < 0.1:
-            for _ in range(max_attempts):
+            for _ in range(self.max_attempts):
                 if 0 <= new_point.x <= self.a and 0 <= new_point.y <= self.b:
                     return new_point  # Found a valid 
              # Generate a new random point
@@ -131,7 +131,7 @@ class Trajectory:
             new_point = Point(circle_x, circle_y)
 
 
-        for _ in range(max_attempts):
+        for _ in range(self.max_attempts):
             for area in self.moving_object.assigned_areas:
                 if area.contains(new_point):
                     return new_point  # Found a valid move
