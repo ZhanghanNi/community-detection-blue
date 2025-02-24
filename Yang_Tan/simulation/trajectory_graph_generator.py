@@ -156,9 +156,9 @@ def main():
     n = 3  # number of sub-areas
     m = 10  # number of points per sub-area
     h = 10  # steps in each trajectory
-    step_size = 50  # maximum step size for trajectories
+    step_size = 20  # maximum step size for trajectories
     
-    ratio = 0.1
+    ratio = 0.4
     k = int((3 * n * m * h) * ratio)
 
     # Create study area and generate points
@@ -167,9 +167,10 @@ def main():
     
      # Generate graphs from moving_objects using our Graph_Trajectory_Generator
     graph_generator = Graph_Trajectory_Generator(moving_objects, k)
-    
+    original_graph = graph_generator.graph 
+    merged_graph = graph_generator.merged_graph
     # Visualize both graphs with subareas overlaid
-    visualize_graphs(graph_generator.graph, graph_generator.merged_graph, sub_areas, a, b)
+    visualize_graphs(original_graph, merged_graph, sub_areas, a, b)
     
 
 if __name__ == "__main__":
