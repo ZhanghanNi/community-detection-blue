@@ -71,7 +71,7 @@ def main():
     if args.dataset == "celegans_neural":
         dataset_name = "Neural network of the nematode C. Elegans"
         dataset = undirected_neural_data.get_neuronal_connectivity_graph(
-            "Jake/neural_connectivity/symmetric_combined.csv"
+            "Jake/neural_connectivity/undirected_added_nodes.csv"
         )
 
     match args.algorithm:

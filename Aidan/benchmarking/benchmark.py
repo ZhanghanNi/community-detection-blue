@@ -142,7 +142,7 @@ if __name__ == "__main__":
         import undirected_neural_data
 
         dataset = undirected_neural_data.get_neuronal_connectivity_graph(
-            "../../Jake/neural_connectivity/symmetric_combined.csv"
+            "../../Jake/neural_connectivity/undirected_added_nodes.csv"
         )
 
     output_file = f"final_{args.dataset}_benchmark_results.csv"
