@@ -54,6 +54,8 @@ def main(
     )
 
     if not benchmarking_mode:
+        print("Modularity: ", utils.modularity(immutable_G, girvan_newman_communities))
+
         utils.plot_graph_with_communities(
             immutable_G,
             girvan_newman_communities,
@@ -94,6 +96,14 @@ def main(
 def find_network_x_communities_with_highest_modularity(
     G: nx.Graph, max_communities: int
 ):
+    """
+    Run the Network X implementation of Girvan-Newman and output the iteration of communities
+    with the max modularity to compare it to our implementation
+    
+    Parameters:
+    - G: a Network X representation of a graph
+    - max_communities: amount of communities to stop running Girvan-Newman after
+    """
     max_modularity: float = -1.0
     communities_with_max_modularity: Tuple[Set[Union[int, str]]] = None
 

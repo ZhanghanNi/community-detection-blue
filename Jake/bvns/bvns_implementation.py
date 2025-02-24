@@ -30,7 +30,7 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
     G_to_pass = G.copy()
 
     bvns_communities = bvns(G_to_pass, kmax)
-    print("modularity: ", utils.modularity(immutable_G, bvns_communities))
+    print("Modularity: ", utils.modularity(immutable_G, bvns_communities))
     utils.plot_graph_with_communities(
         immutable_G,
         bvns_communities,

@@ -58,6 +58,8 @@ def plot_graph(G: nx.Graph, label_edges: bool = False, title: str = "Graph"):
 
     Parameters:
     - G: Network X representation of a graph
+    - label_edges: whether or not to label edges with their weights if they have them
+    - title: Title for the matplotlib figure
 
     Authors: Yang Tan, Aidan Roessler
     """
@@ -87,6 +89,14 @@ def plot_graph_with_communities(
 ):
     """
     Plot the graph with nodes colored according to their communities.
+    
+    Parameters:
+    - G: Network X representation of a graph
+    - communities: Communities of nodes to label on graph 
+    - label_edges: whether or not to label edges with their weights if they have them
+    - title: Title for the matplotlib figure
+    
+    Authors: Yang Tan and Aidan Roessler
     """
 
     # First, pick one color per community so that
@@ -204,3 +214,17 @@ def remove_empty_communities(communities: List[Set[int]]) -> List[Set[int]]:
     Author: Yang Tan
     """
     return [community for community in communities if len(community) > 0]
+
+def assign_uniform_weights(G: nx.Graph, weight: float = 1.0) -> None:
+    """
+    Assigns the same weight to all edges for the passed in graph (by mutating it)
+    
+    Parameters:
+    - G: a NetworkX representation of a graph
+    - weight: Float value to assign all edge weights in G to
+    
+    Author: Yang Tan and Tony Ni
+    """
+    if not nx.is_weighted(G, weight='weight'):
+        for u, v in G.edges():
+            G[u][v]['weight'] = weight
