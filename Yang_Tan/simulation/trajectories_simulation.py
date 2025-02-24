@@ -183,7 +183,7 @@ def create_study_area(a=100, b=100, n=2, m=20, k=50, step_size=float('inf')):
         for _ in range(m):
             moving_obj = MovingObject(assigned_area, k, step_size, a, b)
             moving_objects.append(moving_obj)
-            print(f"object{_}:")
+            # print(f"object{_}:")
     
     return sub_areas, moving_objects
 

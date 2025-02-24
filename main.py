@@ -12,6 +12,7 @@ from typing import List, Set, Dict, Union
 sys.path.append("Util")
 sys.path.append("Aidan/girvan_newman_implementation")
 sys.path.append("Yang_Tan")
+sys.path.append("Yang_Tan/simulation")
 sys.path.append("Tony/PPI")
 sys.path.append("Jake/bvns")
 sys.path.append("Jake/football")
@@ -21,6 +22,7 @@ import louvain_method_implementation as lm
 import bvns_implementation as bvns
 import comparing_to_football_results as football_results
 import undirected_neural_data
+import trajectory_graph_generator
 import run_eval
 
 Node = Union[int, str]
@@ -51,7 +53,7 @@ def main():
     )
     parser.add_argument(
         "dataset",
-        choices=["karate_club", "college_football", "celegans_neural"],
+        choices=["karate_club", "college_football", "celegans_neural", "urban_movement_synthetic"],
         help="The dataset to run the selected algorithm on",
     )
 
@@ -73,6 +75,13 @@ def main():
         dataset = undirected_neural_data.get_neuronal_connectivity_graph(
             "Jake/neural_connectivity/undirected_added_nodes.csv"
         )
+    if args.dataset == "urban_movement_synthetic":
+        dataset_name = "Simulated Urban Movement Data (Merged Random Trajectories)"
+        # Use the merged trajectory graph
+        dataset = trajectory_graph_generator.main()
+
+    print(f"Number of nodes: {dataset.number_of_nodes()}")
+    print(f"Number of edges: {dataset.number_of_edges()}")
 
     match args.algorithm:
         case "girvan_newman":

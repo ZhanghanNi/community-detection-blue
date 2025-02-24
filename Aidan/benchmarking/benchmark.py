@@ -122,7 +122,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "dataset",
-        choices=["karate_club", "college_football", "celegans_neural"],
+        choices=["karate_club", "college_football", "celegans_neural", "urban_movement_synthetic"],
         help="The dataset to run the selected algorithm on",
     )
     args = parser.parse_args()
@@ -144,6 +144,11 @@ if __name__ == "__main__":
         dataset = undirected_neural_data.get_neuronal_connectivity_graph(
             "../../Jake/neural_connectivity/undirected_added_nodes.csv"
         )
+    if args.dataset == "urban_movement_synthetic":
+        sys.path.append("Yang_Tan/simulation")
+        import trajectory_graph_generator
+        
+        dataset = trajectory_graph_generator.main()
 
     output_file = f"final_{args.dataset}_benchmark_results.csv"
 

@@ -8,6 +8,7 @@
         "./Jake",
         "./Jake/bvns",
         "./Jake/football",
-        "./Jake/neural_connectivity"
+        "./Jake/neural_connectivity",
+        "./Yang_Tan/simulation"
     ]
 }
