@@ -8,6 +8,10 @@ from scipy.spatial import Voronoi
 from matplotlib.patches import Polygon as MplPolygon
 from matplotlib.collections import PatchCollection
 
+import sys
+sys.path.append("../../Aidan/girvan_newman_implementation")
+import girvan_newman_implementation
+
 class Result_Analysis:
     def __init__(self, graph, communities, subareas, a, b):
         self.graph = graph
@@ -149,9 +153,11 @@ def main():
     '''
     Run the algorithm here!
     '''
-    #communities = function(merged_graph)
-    #ra = Result_Analysis(G, communities, sub_areas, a, b)
-    #ra.plot_results()
+
+    communities = girvan_newman_implementation.main(merged_graph, weighted=nx.is_weighted(merged_graph))
+    ra = Result_Analysis(merged_graph, communities, sub_areas, a, b)
+    ra.plot_results()
+>>>>>>> ebd34b9e1f278b6b54156b5e7a00d12c7f7b4f88
     
     
     
