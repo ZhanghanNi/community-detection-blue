@@ -150,7 +150,7 @@ def main():
     Run the algorithm here!
     '''
     #communities = function(merged_graph)
-    #ra = Result_Analysis(G, communities, subareas, 10, 10)
+    #ra = Result_Analysis(G, communities, sub_areas, a, b)
     #ra.plot_results()
     
     
