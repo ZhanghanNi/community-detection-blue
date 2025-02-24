@@ -76,7 +76,7 @@ class Graph_Trajectory_Generator:
                 else:
                     self.merged_graph.add_edge(i, j, weight=self.relationship_matrix[u][v])
                 # (Optional: you can remove or adjust the debug print if needed.)
-                print(f"Added/updated edge between clusters {i} and {j}")
+                # print(f"Added/updated edge between clusters {i} and {j}")
                 
     def get_results(self):
         return self.clustered_points, self.graph, self.merged_graph
@@ -149,7 +149,7 @@ def visualize_graphs(original_graph, merged_graph, sub_areas, a, b):
     plt.show()
 
     
-def main():
+def main(benchmarking_mode = False) -> nx.Graph:
     # Set parameters
     a = 100  # x-axis range
     b = 100  # y-axis range
@@ -163,14 +163,17 @@ def main():
 
     # Create study area and generate points
     sub_areas, moving_objects = ts.create_study_area(a, b, n, m, h, step_size)
-    ts.visualize(moving_objects, sub_areas, a, b)
+    if not benchmarking_mode:
+        ts.visualize(moving_objects, sub_areas, a, b)
     
      # Generate graphs from moving_objects using our Graph_Trajectory_Generator
     graph_generator = Graph_Trajectory_Generator(moving_objects, k)
     
-    # Visualize both graphs with subareas overlaid
-    visualize_graphs(graph_generator.graph, graph_generator.merged_graph, sub_areas, a, b)
+    if not benchmarking_mode:
+        # Visualize both graphs with subareas overlaid
+        visualize_graphs(graph_generator.graph, graph_generator.merged_graph, sub_areas, a, b)
     
+    return graph_generator.get_results()[2]
 
 if __name__ == "__main__":
     main()
