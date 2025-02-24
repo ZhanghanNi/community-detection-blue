@@ -157,7 +157,6 @@ def main():
     communities = girvan_newman_implementation.main(merged_graph, weighted=nx.is_weighted(merged_graph))
     ra = Result_Analysis(merged_graph, communities, sub_areas, a, b)
     ra.plot_results()
->>>>>>> ebd34b9e1f278b6b54156b5e7a00d12c7f7b4f88
     
     
     

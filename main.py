@@ -23,6 +23,7 @@ import bvns_implementation as bvns
 import comparing_to_football_results as football_results
 import undirected_neural_data
 import trajectory_graph_generator
+import trajectory_experiment
 import run_eval
 
 Node = Union[int, str]
@@ -61,6 +62,8 @@ def main():
     dataset: nx.Graph
     dataset_name: str
     bvns_kmax: int = 3
+    generated_communities = [] 
+    subareas_for_urban_movement = []
 
     if args.dataset == "karate_club":
         dataset_name = "Karate Club"
@@ -78,14 +81,14 @@ def main():
     if args.dataset == "urban_movement_synthetic":
         dataset_name = "Simulated Urban Movement Data (Merged Random Trajectories)"
         # Use the merged trajectory graph
-        dataset = trajectory_graph_generator.main()
+        dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
 
     print(f"Number of nodes: {dataset.number_of_nodes()}")
     print(f"Number of edges: {dataset.number_of_edges()}")
 
     match args.algorithm:
         case "girvan_newman":
-            gn.main(
+            generated_communities = gn.main(
                 dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
             )
             if dataset_name == "Karate Club":
@@ -121,7 +124,6 @@ def main():
 
         case "louvain_method":
             generated_communities = lm.main(dataset, dataset_name=dataset_name)
-            print(f"Final communities (us): {generated_communities}")
 
             if dataset_name == "Karate Club":
                 network_x_communities = nx.community.louvain_communities(
@@ -135,10 +137,13 @@ def main():
                 )
 
         case "bvns":
-            bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)
-
-    # run_eval.main()
-
+            generated_communities = bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)
+    
+    # Plot additional visualizations for urban movement that are dependent on communities
+    if args.dataset == "urban_movement_synthetic":
+        # Last two parameters here are a and b, the x-axis and y-axis ranges
+        result_analysis = trajectory_experiment.Result_Analysis(dataset, generated_communities, subareas_for_urban_movement, 100, 100)
+        result_analysis.plot_results()
 
 if __name__ == "__main__":
     main()

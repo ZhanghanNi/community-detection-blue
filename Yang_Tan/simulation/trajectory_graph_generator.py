@@ -149,7 +149,7 @@ def visualize_graphs(original_graph, merged_graph, sub_areas, a, b):
     plt.show()
 
     
-def main(benchmarking_mode = False) -> nx.Graph:
+def main(benchmarking_mode = False):
     # Set parameters
     a = 100  # x-axis range
     b = 100  # y-axis range
@@ -174,7 +174,7 @@ def main(benchmarking_mode = False) -> nx.Graph:
         # Visualize both graphs with subareas overlaid
         visualize_graphs(graph_generator.graph, graph_generator.merged_graph, sub_areas, a, b)
     
-    return graph_generator.get_results()[2]
+    return graph_generator.get_results()[2], sub_areas
 
 if __name__ == "__main__":
     main()

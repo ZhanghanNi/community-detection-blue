@@ -174,7 +174,7 @@ def create_study_area(a=100, b=100, n=2, m=20, k=50, step_size=float('inf')):
 
 
     for i in range(3 * n):
-        print(f"cluster{i}:")
+        # print(f"cluster{i}:")
         if i < num:
             assigned_area = [sub_areas[i]]
         else:
