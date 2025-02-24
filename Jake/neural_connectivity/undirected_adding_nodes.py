@@ -21,3 +21,7 @@ adj_matrix.to_csv('undirected_added_nodes.csv')
 
 # Print the final shape to confirm it's square
 print(adj_matrix.shape)
+
+adj_matrix = adj_matrix.fillna(0)  # Replace NaNs with 0
+num_edges = (adj_matrix.to_numpy() != 0).sum() // 2  # Count nonzero edges, divide by 2 for undirected graph
+print(f"Number of edges: {num_edges}")
