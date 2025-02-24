@@ -111,7 +111,7 @@ class Trajectory:
         self.step_size = step_size
         self.a = a
         self.b = b
-        self.max_attempts = 1000  # Prevent infinite loops
+        self.max_attempts = 5000  # Prevent infinite loops
         self.generate_trajectory()
     
     def move(self, point):

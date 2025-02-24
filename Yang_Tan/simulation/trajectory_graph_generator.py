@@ -156,9 +156,9 @@ def main(benchmarking_mode = False) -> nx.Graph:
     n = 3  # number of sub-areas
     m = 10  # number of points per sub-area
     h = 10  # steps in each trajectory
-    step_size = 50  # maximum step size for trajectories
+    step_size = 20  # maximum step size for trajectories
     
-    ratio = 0.1
+    ratio = 0.4
     k = int((3 * n * m * h) * ratio)
 
     # Create study area and generate points
@@ -168,6 +168,7 @@ def main(benchmarking_mode = False) -> nx.Graph:
     
      # Generate graphs from moving_objects using our Graph_Trajectory_Generator
     graph_generator = Graph_Trajectory_Generator(moving_objects, k)
+    
     
     if not benchmarking_mode:
         # Visualize both graphs with subareas overlaid
