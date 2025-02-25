@@ -90,6 +90,7 @@ def main():
     match args.algorithm:
         case "girvan_newman":
             algorithm_name = "Girvan Newman"
+            print(f"Running {algorithm_name} on {dataset_name}")
             
             generated_communities = gn.main(
                 dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
@@ -127,7 +128,8 @@ def main():
 
         case "louvain_method":
             algorithm_name = "Louvain Method"
-            
+            print(f"Running {algorithm_name} on {dataset_name}")
+
             generated_communities = lm.main(dataset, dataset_name=dataset_name)
 
             if dataset_name == "Karate Club":
@@ -143,7 +145,8 @@ def main():
 
         case "bvns":
             algorithm_name = "BVNS"
-            
+            print(f"Running {algorithm_name} on {dataset_name}")
+
             generated_communities = bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)
     
     # Plot additional visualizations for urban movement that are dependent on communities
