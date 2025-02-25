@@ -151,7 +151,7 @@ if __name__ == "__main__":
     if args.dataset == "urban_movement_synthetic":
         sys.path.append("Yang_Tan/simulation")
         import trajectory_graph_generator
-        
+
         dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
 
     output_file = f"final_{args.dataset}_benchmark_results.csv"
@@ -190,6 +190,37 @@ if __name__ == "__main__":
                 #     print(f"BVNS_Final_Communities: {result["BVNS_Final_Communities"]}")
                 if args.dataset == "urban_movement_synthetic":
                     print("Visualizing Urban Movement Results")
-                    girvan_newman_result_analysis = trajectory_experiment.Result_Analysis(dataset, result["GN_Final_Communities"], subareas_for_urban_movement, 100, 100, "Girvan Newman")
+                    girvan_newman_result_analysis = (
+                        trajectory_experiment.Result_Analysis(
+                            dataset,
+                            result["GN_Final_Communities"],
+                            subareas_for_urban_movement,
+                            100,
+                            100,
+                            "Girvan Newman",
+                        )
+                    )
+                    girvan_newman_result_analysis.plot_results()
+
+                    louvain_result_analysis = trajectory_experiment.Result_Analysis(
+                        dataset,
+                        result["BVNS_Final_Communities"],
+                        subareas_for_urban_movement,
+                        100,
+                        100,
+                        "Louvain",
+                    )
+                    louvain_result_analysis.plot_results()
+
+                    bvns_result_analysis = trajectory_experiment.Result_Analysis(
+                        dataset,
+                        result["LV_Final_Communities"],
+                        subareas_for_urban_movement,
+                        100,
+                        100,
+                        "BVNS",
+                    )
+                    bvns_result_analysis.plot_results()
+
             except Exception as e:
                 print(f"Error in benchmark execution: {e}")
