@@ -1,0 +1,13 @@
+Dataset,Num Nodes,Num Edges,Algorithm,Time (s),Peak Memory (mb),Modularity
+Karate Club,34,78,Girvan-Newman,0.27,0.07,0.38
+,,,Louvain,0.11,0.07,0.43
+,,,BVNS,14.54,0.03,0.44
+College Football,115,613,Girvan-Newman,28.08,29.19,0.6
+,,,Louvain,3.06,0.20,0.58
+,,,BVNS,276.46,0.04,0.49
+Urban Movement,360,2925,Girvan-Newman,19592.44,1.40,0.67
+,,,Louvain,557.48,1.35,0.65
+,,,BVNS,15581.97,0.41,0.27
+C. Elegans Neurons,473,5025,Girvan-Newman,8115.11,30.25,0.35
+,,,Louvain,265.79,2.23,0.53
+,,,BVNS,7845.69,0.06,0.25
