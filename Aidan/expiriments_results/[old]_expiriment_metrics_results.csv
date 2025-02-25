@@ -1,3 +1,0 @@
-Dataset,Algorithm,Modularity,,,,
-Karate Club,Girvan-Newman (maximizing modularity),0.384972170686456,,,,
-Karate Club,Girvan-Newman (limited to two communities),0.347660276231705,,,,
