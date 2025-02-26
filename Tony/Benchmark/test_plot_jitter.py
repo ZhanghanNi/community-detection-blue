@@ -2,21 +2,11 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Global parameters
-# JITTER_AMOUNT = 0.001
-# ALPHA = 0.3
+# Global jitter amount
 JITTER_AMOUNT = 0.005
-ALPHA = 1
 
-
-def add_jitter(values, jitter_amount=JITTER_AMOUNT, cap=False):
-    jittered = []
-    for v in values:
-        new_v = v + np.random.uniform(-jitter_amount, jitter_amount)
-        if cap and new_v >= 1:
-            new_v = 1
-        jittered.append(new_v)
-    return jittered
+def add_jitter(values, jitter_amount=JITTER_AMOUNT):
+    return [v + np.random.uniform(-jitter_amount, jitter_amount) for v in values]
 
 master_results = []
 with open("benchmark_log_FULL_corrected.csv", "r", newline="") as csvfile:
@@ -203,18 +193,18 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     fig_ring, axs_ring = plt.subplots(2, 3, figsize=(18, 10))
     ax_time_r = axs_ring[0,0]
     ax_mem_r = axs_ring[0,1]
-    ax_mod_r = axs_ring[-2,2]
+    ax_mod_r = axs_ring[0,2]
     ax_cond_r = axs_ring[1,0]
     ax_ari_r = axs_ring[1,1]
 
-    # Apply jitter to y values and set transparency using ALPHA.
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_gn), marker='o', label='GN', alpha=ALPHA)
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_lp), marker='o', label='LP', alpha=ALPHA)
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_alp), marker='o', label='ALP', alpha=ALPHA)
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_lv), marker='o', label='LV', alpha=ALPHA)
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_bvns), marker='o', label='BVNS', alpha=ALPHA)
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_gnx), marker='o', label='GNX', alpha=ALPHA)
-    ax_time_r.scatter(x_ring, add_jitter(t_ring_lnx), marker='o', label='LNX', alpha=ALPHA)
+    # Apply jitter to y values in each scatter call.
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_gn), marker='o', label='GN')
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_lp), marker='o', label='LP')
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_alp), marker='o', label='ALP')
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_lv), marker='o', label='LV')
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_bvns), marker='o', label='BVNS')
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_gnx), marker='o', label='GNX')
+    ax_time_r.scatter(x_ring, add_jitter(t_ring_lnx), marker='o', label='LNX')
     ax_time_r.set_title(f"{label} (Ring) - Time")
     ax_time_r.set_xlabel("#Edges")
     ax_time_r.set_ylabel("Time (s)")
@@ -222,13 +212,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_time_r], x_ring)
     set_dynamic_ylim(ax_time_r, t_ring_gn + t_ring_lp + t_ring_alp + t_ring_lv + t_ring_bvns + t_ring_gnx + t_ring_lnx)
 
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_gn), marker='o', label='GN', alpha=ALPHA)
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_lp), marker='o', label='LP', alpha=ALPHA)
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_alp), marker='o', label='ALP', alpha=ALPHA)
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_lv), marker='o', label='LV', alpha=ALPHA)
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_bvns), marker='o', label='BVNS', alpha=ALPHA)
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_gnx), marker='o', label='GNX', alpha=ALPHA)
-    ax_mem_r.scatter(x_ring, add_jitter(m_ring_lnx), marker='o', label='LNX', alpha=ALPHA)
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_gn), marker='o', label='GN')
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_lp), marker='o', label='LP')
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_alp), marker='o', label='ALP')
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_lv), marker='o', label='LV')
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_bvns), marker='o', label='BVNS')
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_gnx), marker='o', label='GNX')
+    ax_mem_r.scatter(x_ring, add_jitter(m_ring_lnx), marker='o', label='LNX')
     ax_mem_r.set_title(f"{label} (Ring) - Memory")
     ax_mem_r.set_xlabel("#Edges")
     ax_mem_r.set_ylabel("Memory (bytes)")
@@ -236,13 +226,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_mem_r], x_ring)
     set_dynamic_ylim(ax_mem_r, m_ring_gn + m_ring_lp + m_ring_alp + m_ring_lv + m_ring_bvns + m_ring_gnx + m_ring_lnx)
 
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_gn), marker='o', label='GN', alpha=ALPHA)
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_lp), marker='o', label='LP', alpha=ALPHA)
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_alp), marker='o', label='ALP', alpha=ALPHA)
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_lv), marker='o', label='LV', alpha=ALPHA)
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_bvns), marker='o', label='BVNS', alpha=ALPHA)
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_gnx), marker='o', label='GNX', alpha=ALPHA)
-    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_lnx), marker='o', label='LNX', alpha=ALPHA)
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_gn), marker='o', label='GN')
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_lp), marker='o', label='LP')
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_alp), marker='o', label='ALP')
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_lv), marker='o', label='LV')
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_bvns), marker='o', label='BVNS')
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_gnx), marker='o', label='GNX')
+    ax_mod_r.scatter(x_ring, add_jitter(mod_ring_lnx), marker='o', label='LNX')
     ax_mod_r.set_title(f"{label} (Ring) - Modularity")
     ax_mod_r.set_xlabel("#Edges")
     ax_mod_r.set_ylabel("Modularity")
@@ -250,13 +240,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_mod_r], x_ring)
     set_dynamic_ylim(ax_mod_r, mod_ring_gn + mod_ring_lp + mod_ring_alp + mod_ring_lv + mod_ring_bvns + mod_ring_gnx + mod_ring_lnx)
 
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_gn), marker='o', label='GN', alpha=ALPHA)
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_lp), marker='o', label='LP', alpha=ALPHA)
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_alp), marker='o', label='ALP', alpha=ALPHA)
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_lv), marker='o', label='LV', alpha=ALPHA)
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_bvns), marker='o', label='BVNS', alpha=ALPHA)
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_gnx), marker='o', label='GNX', alpha=ALPHA)
-    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_lnx), marker='o', label='LNX', alpha=ALPHA)
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_gn), marker='o', label='GN')
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_lp), marker='o', label='LP')
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_alp), marker='o', label='ALP')
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_lv), marker='o', label='LV')
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_bvns), marker='o', label='BVNS')
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_gnx), marker='o', label='GNX')
+    ax_cond_r.scatter(x_ring, add_jitter(cond_ring_lnx), marker='o', label='LNX')
     ax_cond_r.set_title(f"{label} (Ring) - Conductance")
     ax_cond_r.set_xlabel("#Edges")
     ax_cond_r.set_ylabel("Conductance")
@@ -264,13 +254,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_cond_r], x_ring)
     set_dynamic_ylim(ax_cond_r, cond_ring_gn + cond_ring_lp + cond_ring_alp + cond_ring_lv + cond_ring_bvns + cond_ring_gnx + cond_ring_lnx)
 
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_gn), marker='o', label='GN', alpha=ALPHA)
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_lp), marker='o', label='LP', alpha=ALPHA)
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_alp), marker='o', label='ALP', alpha=ALPHA)
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_lv), marker='o', label='LV', alpha=ALPHA)
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_bvns), marker='o', label='BVNS', alpha=ALPHA)
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_gnx), marker='o', label='GNX', alpha=ALPHA)
-    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_lnx), marker='o', label='LNX', alpha=ALPHA)
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_gn), marker='o', label='GN')
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_lp), marker='o', label='LP')
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_alp), marker='o', label='ALP')
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_lv), marker='o', label='LV')
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_bvns), marker='o', label='BVNS')
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_gnx), marker='o', label='GNX')
+    ax_ari_r.scatter(x_ring, add_jitter(ari_ring_lnx), marker='o', label='LNX')
     ax_ari_r.set_title(f"{label} (Ring) - ARI")
     ax_ari_r.set_xlabel("#Edges")
     ax_ari_r.set_ylabel("ARI")
@@ -286,17 +276,17 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     fig_sbm, axs_sbm = plt.subplots(2, 3, figsize=(18, 10))
     ax_time_s = axs_sbm[0,0]
     ax_mem_s = axs_sbm[0,1]
-    ax_mod_s = axs_sbm[-2,2]
+    ax_mod_s = axs_sbm[0,2]
     ax_cond_s = axs_sbm[1,0]
     ax_ari_s = axs_sbm[1,1]
 
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_gn), marker='x', label='GN', alpha=ALPHA)
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_lp), marker='x', label='LP', alpha=ALPHA)
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_alp), marker='x', label='ALP', alpha=ALPHA)
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_lv), marker='x', label='LV', alpha=ALPHA)
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_bvns), marker='x', label='BVNS', alpha=ALPHA)
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_gnx), marker='x', label='GNX', alpha=ALPHA)
-    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_lnx), marker='x', label='LNX', alpha=ALPHA)
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_gn), marker='x', label='GN')
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_lp), marker='x', label='LP')
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_alp), marker='x', label='ALP')
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_lv), marker='x', label='LV')
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_bvns), marker='x', label='BVNS')
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_gnx), marker='x', label='GNX')
+    ax_time_s.scatter(x_sbm, add_jitter(t_sbm_lnx), marker='x', label='LNX')
     ax_time_s.set_title(f"{label} (SBM) - Time")
     ax_time_s.set_xlabel("#Edges")
     ax_time_s.set_ylabel("Time (s)")
@@ -304,13 +294,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_time_s], x_sbm)
     set_dynamic_ylim(ax_time_s, t_sbm_gn + t_sbm_lp + t_sbm_alp + t_sbm_lv + t_sbm_bvns + t_sbm_gnx + t_sbm_lnx)
 
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_gn), marker='x', label='GN', alpha=ALPHA)
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_lp), marker='x', label='LP', alpha=ALPHA)
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_alp), marker='x', label='ALP', alpha=ALPHA)
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_lv), marker='x', label='LV', alpha=ALPHA)
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_bvns), marker='x', label='BVNS', alpha=ALPHA)
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_gnx), marker='x', label='GNX', alpha=ALPHA)
-    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_lnx), marker='x', label='LNX', alpha=ALPHA)
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_gn), marker='x', label='GN')
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_lp), marker='x', label='LP')
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_alp), marker='x', label='ALP')
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_lv), marker='x', label='LV')
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_bvns), marker='x', label='BVNS')
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_gnx), marker='x', label='GNX')
+    ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_lnx), marker='x', label='LNX')
     ax_mem_s.set_title(f"{label} (SBM) - Memory")
     ax_mem_s.set_xlabel("#Edges")
     ax_mem_s.set_ylabel("Memory (bytes)")
@@ -318,13 +308,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_mem_s], x_sbm)
     set_dynamic_ylim(ax_mem_s, m_sbm_gn + m_sbm_lp + m_sbm_alp + m_sbm_lv + m_sbm_bvns + m_sbm_gnx + m_sbm_lnx)
 
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_gn), marker='x', label='GN', alpha=ALPHA)
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_lp), marker='x', label='LP', alpha=ALPHA)
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_alp), marker='x', label='ALP', alpha=ALPHA)
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_lv), marker='x', label='LV', alpha=ALPHA)
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_bvns), marker='x', label='BVNS', alpha=ALPHA)
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_gnx), marker='x', label='GNX', alpha=ALPHA)
-    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_lnx), marker='x', label='LNX', alpha=ALPHA)
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_gn), marker='x', label='GN')
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_lp), marker='x', label='LP')
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_alp), marker='x', label='ALP')
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_lv), marker='x', label='LV')
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_bvns), marker='x', label='BVNS')
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_gnx), marker='x', label='GNX')
+    ax_mod_s.scatter(x_sbm, add_jitter(mod_sbm_lnx), marker='x', label='LNX')
     ax_mod_s.set_title(f"{label} (SBM) - Modularity")
     ax_mod_s.set_xlabel("#Edges")
     ax_mod_s.set_ylabel("Modularity")
@@ -332,13 +322,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_mod_s], x_sbm)
     set_dynamic_ylim(ax_mod_s, mod_sbm_gn + mod_sbm_lp + mod_sbm_alp + mod_sbm_lv + mod_sbm_bvns + mod_sbm_gnx + mod_sbm_lnx)
 
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_gn), marker='x', label='GN', alpha=ALPHA)
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_lp), marker='x', label='LP', alpha=ALPHA)
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_alp), marker='x', label='ALP', alpha=ALPHA)
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_lv), marker='x', label='LV', alpha=ALPHA)
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_bvns), marker='x', label='BVNS', alpha=ALPHA)
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_gnx), marker='x', label='GNX', alpha=ALPHA)
-    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_lnx), marker='x', label='LNX', alpha=ALPHA)
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_gn), marker='x', label='GN')
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_lp), marker='x', label='LP')
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_alp), marker='x', label='ALP')
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_lv), marker='x', label='LV')
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_bvns), marker='x', label='BVNS')
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_gnx), marker='x', label='GNX')
+    ax_cond_s.scatter(x_sbm, add_jitter(cond_sbm_lnx), marker='x', label='LNX')
     ax_cond_s.set_title(f"{label} (SBM) - Conductance")
     ax_cond_s.set_xlabel("#Edges")
     ax_cond_s.set_ylabel("Conductance")
@@ -346,13 +336,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     set_dynamic_xlim([ax_cond_s], x_sbm)
     set_dynamic_ylim(ax_cond_s, cond_sbm_gn + cond_sbm_lp + cond_sbm_alp + cond_sbm_lv + cond_sbm_bvns + cond_sbm_gnx + cond_sbm_lnx)
 
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_gn), marker='x', label='GN', alpha=ALPHA)
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_lp), marker='x', label='LP', alpha=ALPHA)
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_alp), marker='x', label='ALP', alpha=ALPHA)
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_lv), marker='x', label='LV', alpha=ALPHA)
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_bvns), marker='x', label='BVNS', alpha=ALPHA)
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_gnx), marker='x', label='GNX', alpha=ALPHA)
-    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_lnx), marker='x', label='LNX', alpha=ALPHA)
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_gn), marker='x', label='GN')
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_lp), marker='x', label='LP')
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_alp), marker='x', label='ALP')
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_lv), marker='x', label='LV')
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_bvns), marker='x', label='BVNS')
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_gnx), marker='x', label='GNX')
+    ax_ari_s.scatter(x_sbm, add_jitter(ari_sbm_lnx), marker='x', label='LNX')
     ax_ari_s.set_title(f"{label} (SBM) - ARI")
     ax_ari_s.set_xlabel("#Edges")
     ax_ari_s.set_ylabel("ARI")

@@ -14,6 +14,12 @@ def run_louvain(G):
     import louvain_method_implementation as lm
     return lm.main(G)
 
+def run_girvan_newman_nx(G):
+    import sys
+    sys.path.append("../../Aidan/girvan_newman_implementation")
+    import girvan_newman_implementation as gn
+    return list(gn.find_network_x_communities_with_highest_modularity(G,G.number_of_nodes()))
+
 
 G = nx.ring_of_cliques(2, 2)
 
@@ -31,4 +37,4 @@ G = nx.ring_of_cliques(2, 2)
 #      (6, 8, {'weight': 2}),
 #      (7, 8, {'weight': 1}),
 #  ])
-run_louvain(G)
+print(run_girvan_newman_nx(G))
