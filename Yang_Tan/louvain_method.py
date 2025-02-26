@@ -3,7 +3,7 @@ import numpy as np
 from typing import List, Set, Tuple
 import matplotlib.pyplot as plt
 import sys
-sys.path.append("../../Util")
+sys.path.append("../Util")
 import utils
 
 def louvain_method_sub(G: nx.Graph) -> List[Set[int]]:

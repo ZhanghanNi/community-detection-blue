@@ -38,7 +38,7 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
         title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
     )
 
-    # merged_G = utils.merge_communities(immutable_G, bvns_communities)
+    merged_G = utils.merge_communities(immutable_G, bvns_communities)
 
     utils.plot_graph_with_communities(
         merged_G,
