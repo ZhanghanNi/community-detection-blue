@@ -17,7 +17,7 @@ def add_jitter(values, jitter_amount=JITTER_AMOUNT, cap=False):
 
 
 master_results = []
-with open("../Tony/benchmark/benchmark_log_FULL_corrected.csv", "r", newline="") as csvfile:
+with open("../../../Tony/benchmark/benchmark_log_FULL_corrected.csv", "r", newline="") as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         master_results.append(row)
