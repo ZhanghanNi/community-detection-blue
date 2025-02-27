@@ -149,7 +149,7 @@ def visualize_graphs(original_graph, merged_graph, sub_areas, a, b):
     plt.show()
 
     
-def main(benchmarking_mode = False):
+def main(benchmarking_mode = False, ratio = 0.4):
     # Set parameters
     a = 100  # x-axis range
     b = 100  # y-axis range
@@ -158,7 +158,7 @@ def main(benchmarking_mode = False):
     h = 10  # steps in each trajectory
     step_size = 20  # maximum step size for trajectories
     
-    ratio = 0.4
+    ratio = ratio
     k = int((3 * n * m * h) * ratio)
 
     # Create study area and generate points

@@ -184,10 +184,6 @@ if __name__ == "__main__":
                 writer.writerow(result)
                 print("Benchmarking complete. Results saved to", output_file)
                 # Visualize Final Results for Urban Movement synthetic data
-                # if args.dataset == "karate_club":
-                #     print(f"G-N communities: {result["GN_Final_Communities"]}")
-                #     print(f"Louvain communities: {result["LV_Final_Communities"]}")
-                #     print(f"BVNS_Final_Communities: {result["BVNS_Final_Communities"]}")
                 if args.dataset == "urban_movement_synthetic":
                     print("Visualizing Urban Movement Results")
                     girvan_newman_result_analysis = (
