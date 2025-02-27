@@ -200,7 +200,7 @@ if __name__ == "__main__":
 
                     louvain_result_analysis = trajectory_experiment.Result_Analysis(
                         dataset,
-                        result["BVNS_Final_Communities"],
+                        result["LV_Final_Communities"],
                         subareas_for_urban_movement,
                         100,
                         100,
@@ -210,7 +210,7 @@ if __name__ == "__main__":
 
                     bvns_result_analysis = trajectory_experiment.Result_Analysis(
                         dataset,
-                        result["LV_Final_Communities"],
+                        result["BVNS_Final_Communities"],
                         subareas_for_urban_movement,
                         100,
                         100,
