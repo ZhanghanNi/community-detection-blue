@@ -28,15 +28,6 @@ import run_eval
 
 Node = Union[int, str]
 
-karate_club_ground_truth_communities: List[Set[int]] = [
-    {3, 4, 2, 1, 8, 22, 20, 18, 13, 12, 7, 17, 6, 5, 11},
-    {29, 25, 28, 33, 34, 30, 24, 31, 9, 23, 21, 19, 16, 15, 26, 32, 27, 10},
-]
-
-# Since Girvan and Newman used 1 indexing and we use 0, shift their results by one
-karate_club_ground_truth_1 = {n - 1 for n in karate_club_ground_truth_communities[0]}
-karate_club_ground_truth_2 = {n - 1 for n in karate_club_ground_truth_communities[1]}
-
 
 def main():
     """
@@ -48,14 +39,21 @@ def main():
         description="Run our implementations of community detection algorithms on a dataset."
     )
     parser.add_argument(
-        "algorithm",
+        "--algorithm",
         choices=["girvan_newman", "louvain_method", "bvns"],
+        required=True,
         help="The implementation of a community detection algorithm to run.",
     )
     parser.add_argument(
-        "dataset",
-        choices=["karate_club", "college_football", "celegans_neural", "urban_movement_synthetic"],
-        help="The dataset to run the selected algorithm on",
+        "--dataset",
+        choices=[
+            "karate_club",
+            "college_football",
+            "celegans_neural",
+            "urban_movement_synthetic",
+        ],
+        required=True,
+        help="The dataset to run the selected algorithm on.",
     )
 
     args = parser.parse_args()
@@ -63,13 +61,26 @@ def main():
     dataset_name: str
     algorithm_name: str
     bvns_kmax: int = 3
-    generated_communities = [] 
+    generated_communities = []
     subareas_for_urban_movement = []
 
     if args.dataset == "karate_club":
         dataset_name = "Karate Club"
         dataset = nx.karate_club_graph()
         bvns_kmax = 5
+
+        karate_club_ground_truth_communities: List[Set[int]] = [
+            {3, 4, 2, 1, 8, 22, 20, 18, 13, 12, 7, 17, 6, 5, 11},
+            {29, 25, 28, 33, 34, 30, 24, 31, 9, 23, 21, 19, 16, 15, 26, 32, 27, 10},
+        ]
+
+        # Since Girvan and Newman used 1 indexing and we use 0, shift their results by one
+        karate_club_ground_truth_1 = {
+            n - 1 for n in karate_club_ground_truth_communities[0]
+        }
+        karate_club_ground_truth_2 = {
+            n - 1 for n in karate_club_ground_truth_communities[1]
+        }
     if args.dataset == "college_football":
         dataset_name = "College Football"
         dataset = nx.read_gml("Jake/football/football.gml")
@@ -91,7 +102,7 @@ def main():
         case "girvan_newman":
             algorithm_name = "Girvan Newman"
             print(f"Running {algorithm_name} on {dataset_name}")
-            
+
             generated_communities = gn.main(
                 dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
             )
@@ -147,13 +158,23 @@ def main():
             algorithm_name = "BVNS"
             print(f"Running {algorithm_name} on {dataset_name}")
 
-            generated_communities = bvns.main(dataset, kmax=bvns_kmax, dataset_name=dataset_name)
-    
+            generated_communities = bvns.main(
+                dataset, kmax=bvns_kmax, dataset_name=dataset_name
+            )
+
     # Plot additional visualizations for urban movement that are dependent on communities
     if args.dataset == "urban_movement_synthetic":
         # a and b parameters are the x-axis and y-axis ranges
-        result_analysis = trajectory_experiment.Result_Analysis(dataset, generated_communities, subareas_for_urban_movement, 100, 100, algorithm_name)
+        result_analysis = trajectory_experiment.Result_Analysis(
+            dataset,
+            generated_communities,
+            subareas_for_urban_movement,
+            100,
+            100,
+            algorithm_name,
+        )
         result_analysis.plot_results()
+
 
 if __name__ == "__main__":
     main()
