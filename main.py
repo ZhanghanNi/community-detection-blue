@@ -7,7 +7,6 @@ Authors: Aidan Roessler, Tony Ni
 import networkx as nx
 import sys
 import argparse
-from typing import List, Set, Dict, Union
 
 sys.path.append("Util")
 sys.path.append("Aidan/girvan_newman_implementation")
@@ -20,7 +19,6 @@ sys.path.append("Jake/neural_connectivity")
 import girvan_newman_implementation as gn
 import louvain_method_implementation as lm
 import bvns_implementation as bvns
-import comparing_to_football_results as football_results
 import undirected_neural_data
 import trajectory_graph_generator
 import trajectory_experiment

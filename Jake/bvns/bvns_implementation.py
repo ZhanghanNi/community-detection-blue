@@ -9,7 +9,7 @@ import copy
 """
 Code written by Jake Jasmer, February 2025
 
-This code can be used to run the basic variable network search algorithm for community detection
+This code can be used to run the Basic Variable Neighborhood Search algorithm for community detection
 as described in "Variable Neighborhood Search Approach to Community Detection Problem" by 
 Jovanovic et al. It starts with a randomly generated set of communities and then iterates over the
 basic steps. The basic steps involve: 1) shaking: changing the solution by a few nodes to get out
@@ -35,7 +35,7 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
         immutable_G,
         bvns_communities,
         label_edges=True,
-        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
+        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Neighborhood Search",
     )
 
     merged_G = utils.merge_communities(immutable_G, bvns_communities)
@@ -44,7 +44,7 @@ def main(G: nx.Graph, kmax: int = 3, dataset_name: str = "Graph"):
         merged_G,
         communities=[{node} for node in merged_G.nodes()],
         label_edges=True,
-        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Network Search",
+        title=f"{dataset_name} Communities Detected by our Implementation of Basic Variable Neighborhood Search",
     )
 
 """

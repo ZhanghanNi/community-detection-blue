@@ -51,7 +51,7 @@ Each member of the team has their own directory with miscellaneous files. Please
 ## Algorithms
 - Girvan Newman: divisive algorithm that each iteration deletes the edge with the highest betweenness to create a set of communities (connected components) that maximize modularity. See `Aidan/girvan_newman_implementation/girvan_newman_implementation.py` for from scratch implementation.
 - Louvain Method: uses a top down approach to merge nodes into communities that maximize modularity. See `Yang_Tan/louvain_method_implementation.py` for from scratch implementation.
-- Basic Variable Network Search (BVNS): randomization approach to simulate gradient descent for forming communities with maximum modularity. See `Jake/bvns/bvns_implementation.py` for from scratch implementation.
+- Basic Variable Neighborhood Search (BVNS): randomization approach to simulate gradient descent for forming communities with maximum modularity. See `Jake/bvns/bvns_implementation.py` for from scratch implementation.
 
 ## Datasets
 - Karate Club: models the relationships of a karate club that split into two new clubs. Each individual is a node and edges between them represent relationships. Edges are weighted based on strength of relationship. Original dataset from [An Information Flow Model for Conflict and Fission in Small Groups by Wayne W. Zachary](https://www.jstor.org/stable/3629752).
