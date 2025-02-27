@@ -2,8 +2,8 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
-JITTER_AMOUNT = 0.005
-ALPHA = 1
+JITTER_AMOUNT = 0.0
+ALPHA = 0.75
 
 
 def add_jitter(values, jitter_amount=JITTER_AMOUNT, cap=False):
@@ -87,8 +87,8 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     ax_time_r.scatter(
         x_ring, add_jitter(t_ring_gnx), marker="o", label="Network X Implementation", alpha=ALPHA
     )
-    ax_time_r.set_title(f"{label} (Ring) - Time")
-    ax_time_r.set_xlabel("#Edges")
+    ax_time_r.set_title(f"{label.title()} Ring of Cliques Graph")
+    ax_time_r.set_xlabel("Number of Edges")
     ax_time_r.set_ylabel("Time (s)")
     ax_time_r.legend()
     set_dynamic_xlim([ax_time_r], x_ring)
@@ -98,15 +98,15 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
     ax_mem_r.scatter(
         x_ring, add_jitter(m_ring_gnx), marker="o", label="Network X Implementation", alpha=ALPHA
     )
-    ax_mem_r.set_title(f"{label} (Ring) - Memory")
-    ax_mem_r.set_xlabel("#Edges")
-    ax_mem_r.set_ylabel("Memory (bytes)")
+    ax_mem_r.set_title(f"{label.title()} Ring of Cliques Graph")
+    ax_mem_r.set_xlabel("Number of Edges")
+    ax_mem_r.set_ylabel("Peak Memory (bytes)")
     ax_mem_r.legend()
     set_dynamic_xlim([ax_mem_r], x_ring)
     set_dynamic_ylim(ax_mem_r, m_ring_gn + m_ring_gnx)
 
     fig_ring.tight_layout()
-    fig_ring.savefig(f"z_{label.lower()}_ring_gn_gnx.png")
+    fig_ring.savefig(f"z_{label.lower()}_ring_gn_gnx.svg")
     plt.close(fig_ring)
 
     # Plot SBM in another figure
@@ -127,13 +127,13 @@ for label in ["SPARSE", "INTERMEDIATE", "DENSE"]:
 
     ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_gn), marker="x", label="Our Implementation", alpha=ALPHA)
     ax_mem_s.scatter(x_sbm, add_jitter(m_sbm_gnx), marker="x", label="Network X Implementation", alpha=ALPHA)
-    ax_mem_s.set_title(f"{label} (SBM) - Memory")
+    ax_mem_s.set_title(f"{label} (SBM) - Peak Memory")
     ax_mem_s.set_xlabel("#Edges")
-    ax_mem_s.set_ylabel("Memory (bytes)")
+    ax_mem_s.set_ylabel("Peak Memory (bytes)")
     ax_mem_s.legend()
     set_dynamic_xlim([ax_mem_s], x_sbm)
     set_dynamic_ylim(ax_mem_s, m_sbm_gn + m_sbm_gnx)
 
     fig_sbm.tight_layout()
-    fig_sbm.savefig(f"z_{label.lower()}_sbm_gn_gnx.png")
+    fig_sbm.savefig(f"z_{label.lower()}_sbm_gn_gnx.svg")
     plt.close(fig_sbm)
