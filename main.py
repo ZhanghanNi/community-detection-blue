@@ -24,15 +24,14 @@ import comparing_to_football_results as football_results
 import undirected_neural_data
 import trajectory_graph_generator
 import trajectory_experiment
-import run_eval
-
-Node = Union[int, str]
 
 
 def main():
     """
     Highest level function in the whole project that takes in arguments from the CLI to
     run one of our algorithms on one of our datasets based on user input.
+
+    Author: Aidan Roessler
     """
     # https://docs.python.org/3/library/argparse.html
     parser = argparse.ArgumentParser(
@@ -68,19 +67,6 @@ def main():
         dataset_name = "Karate Club"
         dataset = nx.karate_club_graph()
         bvns_kmax = 5
-
-        karate_club_ground_truth_communities: List[Set[int]] = [
-            {3, 4, 2, 1, 8, 22, 20, 18, 13, 12, 7, 17, 6, 5, 11},
-            {29, 25, 28, 33, 34, 30, 24, 31, 9, 23, 21, 19, 16, 15, 26, 32, 27, 10},
-        ]
-
-        # Since Girvan and Newman used 1 indexing and we use 0, shift their results by one
-        karate_club_ground_truth_1 = {
-            n - 1 for n in karate_club_ground_truth_communities[0]
-        }
-        karate_club_ground_truth_2 = {
-            n - 1 for n in karate_club_ground_truth_communities[1]
-        }
     if args.dataset == "college_football":
         dataset_name = "College Football"
         dataset = nx.read_gml("Jake/football/football.gml")
@@ -106,36 +92,6 @@ def main():
             generated_communities = gn.main(
                 dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
             )
-            if dataset_name == "Karate Club":
-                # Only run until there are two communities to compare to the 2 real life communities
-                generated_1, generated_2 = gn.main(
-                    dataset,
-                    weighted=nx.is_weighted(dataset),
-                    dataset_name=dataset_name,
-                    max_communities=2,
-                )
-
-                incorrectly_assigned_nodes = (
-                    karate_club_ground_truth_1 & generated_2
-                ) | (karate_club_ground_truth_2 & generated_1)
-
-                print(
-                    "Incorrectly assigned nodes when amount of communities = 2:",
-                    incorrectly_assigned_nodes,
-                )
-
-            if dataset_name == "College Football":
-                college_football_ground_truth_communities = (
-                    football_results.find_football_truth_values()
-                )
-
-                ten_communities = gn.main(
-                    dataset, weighted=nx.is_weighted(dataset), dataset_name=dataset_name
-                )
-
-                print(
-                    f"Does our implementation return the same communities as the ground truth? {college_football_ground_truth_communities == ten_communities}"
-                )
 
         case "louvain_method":
             algorithm_name = "Louvain Method"
