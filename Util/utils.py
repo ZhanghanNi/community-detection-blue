@@ -8,7 +8,9 @@ Authors: Yang Tan, Aidan Roessler
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from typing import List, Set, Tuple
+import os
+from typing import List, Set
+
 
 def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
     """
@@ -29,7 +31,7 @@ def modularity(G: nx.Graph, communities: List[Set[int]]) -> float:
 
     Returns:
     - The modularity score of the partitioning.
-    
+
     Author: Yang Tan
     """
     m = G.size(weight="weight")  # Total weight of the edges in the graph
@@ -89,13 +91,13 @@ def plot_graph_with_communities(
 ):
     """
     Plot the graph with nodes colored according to their communities.
-    
+
     Parameters:
     - G: Network X representation of a graph
-    - communities: Communities of nodes to label on graph 
+    - communities: Communities of nodes to label on graph
     - label_edges: whether or not to label edges with their weights if they have them
     - title: Title for the matplotlib figure
-    
+
     Authors: Yang Tan and Aidan Roessler
     """
 
@@ -109,7 +111,9 @@ def plot_graph_with_communities(
     )  # Avoid dividing by zero if we have one community
 
     # Compute the color for each community exactly once
-    community_color_map = [plt.cm.rainbow(i / denominator) for i in range(community_count)]
+    community_color_map = [
+        plt.cm.rainbow(i / denominator) for i in range(community_count)
+    ]
 
     # Map each node to the color of its community
     node_to_color = {}
@@ -147,6 +151,115 @@ def plot_graph_with_communities(
     plt.tight_layout()
     plt.title(title)
     plt.show()
+
+
+def save_graph_as_svg(
+    G: nx.Graph, output_directory: str, label_edges: bool = False, title: str = "Graph"
+):
+    """
+    Save the graph as an SVG file with nodes colored according to their communities.
+
+    Parameters:
+    - G: NetworkX representation of a graph
+    - output_directory: Place to save the plot
+    - label_edges: whether or not to label edges with their weights if they have them
+    - title: Title for the SVG file
+
+    Authors: Yang Tan, Aidan Roessler
+    """
+
+    # Create the figure
+    plt.figure(figsize=(8, 6))
+    pos = nx.spring_layout(G, seed=1234)  # positions for all nodes
+    nx.draw_networkx_nodes(G, pos, cmap=plt.cm.rainbow, node_size=500)
+    nx.draw_networkx_edges(G, pos, alpha=0.5)
+    nx.draw_networkx_labels(G, pos, font_size=12, font_weight="bold")
+
+    # Optionally label edges with their weights
+    if label_edges:
+        edge_labels = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10)
+
+    # Save the figure as SVG
+    file_path = os.path.join(output_directory, f"{title.replace(' ', '_')}.svg")
+    plt.title(title)
+    plt.savefig(file_path, format="svg")
+    plt.close()
+
+    print(f"Graph saved as SVG at: {file_path}")
+
+
+def save_graph_with_communities_as_svg(
+    G: nx.Graph,
+    communities: List[Set[int]],
+    output_directory: str,
+    label_edges: bool = False,
+    title="Graph_with_Communities",
+):
+    """
+    Save the graph as an SVG file with nodes colored according to their communities.
+
+    Parameters:
+    - G: NetworkX representation of a graph
+    - communities: Communities of nodes to label on graph
+    - label_edges: whether or not to label edges with their weights if they have them
+    - title: Title for the SVG file
+
+    Authors: Yang Tan, Aidan Roessler
+    """
+
+    # Determine the number of communities
+    community_count = len(communities)
+    denominator = max(community_count - 1, 1)
+
+    # Compute the color for each community exactly once
+    community_color_map = [
+        plt.cm.rainbow(i / denominator) for i in range(community_count)
+    ]
+
+    # Map each node to the color of its community
+    node_to_color = {}
+    for i, community in enumerate(communities):
+        for node in community:
+            node_to_color[node] = community_color_map[i]
+
+    node_colors = [node_to_color[node] for node in G.nodes()]
+
+    # Create the figure
+    plt.figure(figsize=(8, 6))
+
+    pos = nx.spring_layout(G, seed=1234, k=0.5)
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=500)
+    nx.draw_networkx_edges(G, pos, alpha=0.5)
+    nx.draw_networkx_labels(G, pos, font_size=12, font_weight="bold")
+
+    # Optionally label edges with their weights
+    if label_edges:
+        edge_labels = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10)
+
+    # Create legend for communities
+    community_patches = []
+    for i in range(community_count):
+        patch = mpatches.Patch(color=community_color_map[i], label=f"Community {i + 1}")
+        community_patches.append(patch)
+
+    plt.legend(
+        handles=community_patches,
+        loc="upper left",
+        bbox_to_anchor=(1, 1),
+        title="Communities",
+    )
+
+    plt.tight_layout()
+    plt.title(title)
+
+    # Save the figure as SVG
+    file_path = os.path.join(output_directory, f"{title.replace(' ', '_')}.svg")
+    plt.savefig(file_path, format="svg")
+    plt.close()
+
+    print(f"Graph with communities saved as SVG at: {file_path}")
 
 
 def merge_communities(G: nx.Graph, communities: List[Set[int]]) -> nx.Graph:
@@ -201,6 +314,7 @@ def merge_communities(G: nx.Graph, communities: List[Set[int]]) -> nx.Graph:
 
     return new_G
 
+
 def remove_empty_communities(communities: List[Set[int]]) -> List[Set[int]]:
     """
     Remove empty communities from the list of communities.
@@ -210,21 +324,22 @@ def remove_empty_communities(communities: List[Set[int]]) -> List[Set[int]]:
 
     Returns:
     - A new list of communities with empty communities removed.
-    
+
     Author: Yang Tan
     """
     return [community for community in communities if len(community) > 0]
 
+
 def assign_uniform_weights(G: nx.Graph, weight: float = 1.0) -> None:
     """
     Assigns the same weight to all edges for the passed in graph (by mutating it)
-    
+
     Parameters:
     - G: a NetworkX representation of a graph
     - weight: Float value to assign all edge weights in G to
-    
+
     Author: Yang Tan and Tony Ni
     """
-    if not nx.is_weighted(G, weight='weight'):
+    if not nx.is_weighted(G, weight="weight"):
         for u, v in G.edges():
-            G[u][v]['weight'] = weight
+            G[u][v]["weight"] = weight
