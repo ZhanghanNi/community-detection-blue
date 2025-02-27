@@ -99,17 +99,6 @@ def main():
 
             generated_communities = lm.main(dataset, dataset_name=dataset_name)
 
-            if dataset_name == "Karate Club":
-                network_x_communities = nx.community.louvain_communities(
-                    nx.karate_club_graph(), seed=1234
-                )
-
-                print(f"Final Communities (Network X): {network_x_communities}")
-
-                print(
-                    f"Is our final result equal to Network X's? \n {generated_communities == network_x_communities}"
-                )
-
         case "bvns":
             algorithm_name = "BVNS"
             print(f"Running {algorithm_name} on {dataset_name}")

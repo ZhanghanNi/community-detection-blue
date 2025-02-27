@@ -4,6 +4,35 @@
 
 Also check out our project's website [here]() and our paper [here]().
 
+## Installing Dependencies
+Credit to [Python Documentation on Virtual Environments](https://docs.python.org/3/tutorial/venv.html) and Packages for the following instructions. Check it out if you want more information.
+
+1. Create a virtual environment in the root directory of the project.
+```bash
+python -m venv community_detection_blue_comps_env
+```
+
+2. Activate the virtual environment.
+
+On Mac run:
+```bash
+source community_detection_blue_comps_env/bin/activate
+```
+On Windows run:
+```bash
+community_detection_blue_comps_env\Scripts\activate
+```
+
+4. Install the required packages.
+```bash
+pip install -r requirements.txt
+```
+
+5. After you're done running our code, if you'd like to return to your normal environment, deactivate the virtual environment.
+```bash
+deactivate
+```
+
 ## Running our Algorithms
 
 Use `main.py` to run one of our implementations on one of our real world datasets. 
