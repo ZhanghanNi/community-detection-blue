@@ -22,6 +22,8 @@ import bvns_implementation as bvns
 import undirected_neural_data
 import trajectory_graph_generator
 import trajectory_experiment
+# Tony's PPI benchmarking pipeline: contains functions to get PPI dataset
+import run_eval_full
 
 
 def main():
@@ -48,6 +50,7 @@ def main():
             "college_football",
             "celegans_neural",
             "urban_movement_synthetic",
+            "ppi"
         ],
         required=True,
         help="The dataset to run the selected algorithm on.",
@@ -78,6 +81,9 @@ def main():
         dataset_name = "Simulated Urban Movement Data (Merged Random Trajectories)"
         # Use the merged trajectory graph
         dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
+    if args.dataset == "urban_movement_synthetic":
+        dataset_name = "Yeast Protein-Protein Interaction"
+        
 
     print(f"Number of nodes: {dataset.number_of_nodes()}")
     print(f"Number of edges: {dataset.number_of_edges()}")
