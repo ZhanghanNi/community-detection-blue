@@ -1,6 +1,6 @@
 import time
 import os
-import psutil
+# import psutil
 import networkx as nx
 from networkx.algorithms.community.quality import modularity
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -25,11 +25,11 @@ def run_louvain(graph):
 
     return lm.main(graph, benchmarking_mode=True)
 
-def run_bvns(graph, kmax=3):
-    sys.path.append("../../Jake/bvns")
-    import bvns_implementation as bvns
+# def run_bvns(graph, kmax=3):
+#     sys.path.append("../../Jake/bvns")
+#     import bvns_implementation as bvns
 
-    return bvns.bvns_with_communities_specified(graph, kmax=kmax)
+#     return bvns.bvns_with_communities_specified(graph, kmax=kmax)
 
 
 def measure_performance(algorithm, graph, kmax=3):
@@ -100,20 +100,20 @@ def run_benchmark(graph: nx.Graph, kmax=3):
         print(f"Error running Louvain: {e}")
 
     # Run BVNS
-    try:
-        bvns_partition, bvns_time, bvns_memory = measure_performance(
-            run_bvns, graph, kmax=kmax
-        )
-        results.update(
-            {
-                "BVNS_Time": bvns_time,
-                "BVNS_Memory": bvns_memory,
-                "BVNS_Modularity": modularity(graph, bvns_partition),
-                "BVNS_Final_Communities": bvns_partition,
-            }
-        )
-    except Exception as e:
-        print(f"Error running BVNS: {e}")
+    # try:
+    #     bvns_partition, bvns_time, bvns_memory = measure_performance(
+    #         run_bvns, graph, kmax=kmax
+    #     )
+    #     results.update(
+    #         {
+    #             "BVNS_Time": bvns_time,
+    #             "BVNS_Memory": bvns_memory,
+    #             "BVNS_Modularity": modularity(graph, bvns_partition),
+    #             "BVNS_Final_Communities": bvns_partition,
+    #         }
+    #     )
+    # except Exception as e:
+    #     print(f"Error running BVNS: {e}")
 
     return results
 
@@ -208,15 +208,15 @@ if __name__ == "__main__":
                     )
                     louvain_result_analysis.plot_results()
 
-                    bvns_result_analysis = trajectory_experiment.Result_Analysis(
-                        dataset,
-                        result["BVNS_Final_Communities"],
-                        subareas_for_urban_movement,
-                        100,
-                        100,
-                        "BVNS",
-                    )
-                    bvns_result_analysis.plot_results()
+                    # bvns_result_analysis = trajectory_experiment.Result_Analysis(
+                    #     dataset,
+                    #     result["BVNS_Final_Communities"],
+                    #     subareas_for_urban_movement,
+                    #     100,
+                    #     100,
+                    #     "BVNS",
+                    # )
+                    # bvns_result_analysis.plot_results()
 
             except Exception as e:
                 print(f"Error in benchmark execution: {e}")
