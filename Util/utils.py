@@ -228,7 +228,7 @@ def save_graph_with_communities_as_svg(
     # Create the figure
     plt.figure(figsize=(8, 6))
 
-    pos = nx.spring_layout(G, seed=1234, k=0.5)
+    pos = nx.spring_layout(G, seed=1234, k=1.0)
     nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=500)
     nx.draw_networkx_edges(G, pos, alpha=0.5)
     nx.draw_networkx_labels(G, pos, font_size=12, font_weight="bold")
@@ -244,15 +244,16 @@ def save_graph_with_communities_as_svg(
         patch = mpatches.Patch(color=community_color_map[i], label=f"Community {i + 1}")
         community_patches.append(patch)
 
-    plt.legend(
-        handles=community_patches,
-        loc="upper left",
-        bbox_to_anchor=(1, 1),
-        title="Communities",
-    )
+    # Uncomment to enable title and legend
+    # plt.legend(
+    #     handles=community_patches,
+    #     loc="upper left",
+    #     bbox_to_anchor=(1, 1),
+    #     title="Communities",
+    # )
 
     plt.tight_layout()
-    plt.title(title)
+    # plt.title(title)
 
     # Save the figure as SVG
     file_path = os.path.join(output_directory, f"{title.replace(' ', '_')}.svg")
