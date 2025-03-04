@@ -81,9 +81,9 @@ def main():
         dataset_name = "Simulated Urban Movement Data (Merged Random Trajectories)"
         # Use the merged trajectory graph
         dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
-    if args.dataset == "urban_movement_synthetic":
+    if args.dataset == "ppi":
         dataset_name = "Yeast Protein-Protein Interaction"
-        
+        dataset = run_eval_full.load_data("Tony/PPI/yeast_network.txt")
 
     print(f"Number of nodes: {dataset.number_of_nodes()}")
     print(f"Number of edges: {dataset.number_of_edges()}")
