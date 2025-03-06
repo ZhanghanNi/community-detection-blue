@@ -64,26 +64,31 @@ def main():
     generated_communities = []
     subareas_for_urban_movement = []
 
-    if args.dataset == "karate_club":
-        dataset_name = "Karate Club"
-        dataset = nx.karate_club_graph()
-        bvns_kmax = 5
-    if args.dataset == "college_football":
-        dataset_name = "College Football"
-        dataset = nx.read_gml("Jake/football/football.gml")
-        bvns_kmax = 4
-    if args.dataset == "celegans_neural":
-        dataset_name = "Neural network of the nematode C. Elegans"
-        dataset = undirected_neural_data.get_neuronal_connectivity_graph(
-            "Jake/neural_connectivity/undirected_added_nodes.csv"
-        )
-    if args.dataset == "urban_movement_synthetic":
-        dataset_name = "Simulated Urban Movement Data (Merged Random Trajectories)"
-        # Use the merged trajectory graph
-        dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
-    if args.dataset == "ppi":
-        dataset_name = "Yeast Protein-Protein Interaction"
-        dataset = run_eval_full.load_data("Tony/PPI/yeast_network.txt")
+    match args.dataset:
+        case "karate_club":
+            dataset_name = "Karate Club"
+            dataset = nx.karate_club_graph()
+            bvns_kmax = 5
+            
+        case "college_football":
+            dataset_name = "College Football"
+            dataset = nx.read_gml("Jake/football/football.gml")
+            bvns_kmax = 4
+            
+        case "celegans_neural":
+            dataset_name = "Neural network of the nematode C. Elegans"
+            dataset = undirected_neural_data.get_neuronal_connectivity_graph(
+                "Jake/neural_connectivity/undirected_added_nodes.csv"
+            )
+            
+        case "urban_movement_synthetic":
+            dataset_name = "Simulated Urban Movement Data (Merged Random Trajectories)"
+            # Use the merged trajectory graph
+            dataset, subareas_for_urban_movement = trajectory_graph_generator.main()
+            
+        case "ppi":
+            dataset_name = "Yeast Protein-Protein Interaction"
+            dataset = run_eval_full.load_data("Tony/PPI/yeast_network.txt")
 
     print(f"Number of nodes: {dataset.number_of_nodes()}")
     print(f"Number of edges: {dataset.number_of_edges()}")
@@ -102,7 +107,7 @@ def main():
             print(f"Running {algorithm_name} on {dataset_name}")
 
             generated_communities = lm.main(dataset, dataset_name=dataset_name)
-
+            
         case "bvns":
             algorithm_name = "BVNS"
             print(f"Running {algorithm_name} on {dataset_name}")
