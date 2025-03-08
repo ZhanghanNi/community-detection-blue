@@ -2,7 +2,7 @@
 
 ### Yang Tan, Aidan Roessler, Tony Ni, Jake Jasmer
 
-Also check out our project's website [here]() and our paper [here]().
+Also check out our project's website [here]() which includes our final paper and posters.
 
 ## Installing Dependencies
 Credit to [Python Documentation on Virtual Environments](https://docs.python.org/3/tutorial/venv.html) and Packages for the following instructions. Check it out if you want more information.
