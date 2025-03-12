@@ -154,7 +154,7 @@ def main(benchmarking_mode = False, ratio = 0.4):
     a = 100  # x-axis range
     b = 100  # y-axis range
     n = 3  # number of sub-areas
-    m = 10  # number of points per sub-area
+    m = 20  # number of points per sub-area
     h = 10  # steps in each trajectory
     step_size = 20  # maximum step size for trajectories
     
