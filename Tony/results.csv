@@ -1,4 +1,0 @@
-Method,NumClusters,Recall,Precision,F-measure,PPV,SN,ACC,SEP
-louvain_nx,9,0.000,0.000,0.000,0.041,0.822,0.183,0.001
-label_propagation,3,0.000,0.000,0.000,0.014,0.870,0.110,0.000
-asyn_lpa,6,0.000,0.000,0.000,0.024,0.854,0.143,0.001
