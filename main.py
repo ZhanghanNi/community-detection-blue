@@ -23,7 +23,7 @@ import undirected_neural_data
 import trajectory_graph_generator
 import trajectory_experiment
 # Tony's PPI benchmarking pipeline: contains functions to get PPI dataset
-import run_eval_full
+import PPI_run_eval
 
 
 def main():
@@ -88,7 +88,7 @@ def main():
             
         case "ppi":
             dataset_name = "Yeast Protein-Protein Interaction"
-            dataset = run_eval_full.load_data("Tony/PPI/yeast_network.txt")
+            dataset = PPI_run_eval.load_data("Tony/PPI/yeast_network.txt")
 
     print(f"Number of nodes: {dataset.number_of_nodes()}")
     print(f"Number of edges: {dataset.number_of_edges()}")
