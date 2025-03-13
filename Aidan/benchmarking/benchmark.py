@@ -1,6 +1,11 @@
+"""
+File to run all of our algorithms on all of our datasets (minus PPI + synthetic datasets)
+and collect metrics for us to analyze. 
+
+Author: Aidan Roessler, Tony Ni
+"""
+
 import time
-import os
-# import psutil
 import networkx as nx
 from networkx.algorithms.community.quality import modularity
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -12,7 +17,17 @@ import tracemalloc
 sys.path.append("../../Yang_Tan/simulation")
 import trajectory_experiment
 
+
 def run_girvan_newman(graph):
+    """
+    Runs our Girvan-Newman implementation.
+
+    Parameters:
+    - graph: NetworkX Graph on which the Girvan-Newman algorithm will be run
+
+    Returns:
+    - A list of communities found by Girvan-Newman (represented as sets)
+    """
     sys.path.append("../girvan_newman_implementation")
     import girvan_newman_implementation as gn
 
@@ -20,12 +35,32 @@ def run_girvan_newman(graph):
 
 
 def run_louvain(graph):
+    """
+    Runs our Louvain method implementation.
+
+    Parameters:
+    - graph: NetworkX Graph on which the Louvain method will be run
+
+    Returns:
+    - A list of communities found by the Louvain method (represented as sets)
+    """
     sys.path.append("../../Yang_Tan")
     import louvain_method_implementation as lm
 
     return lm.main(graph, benchmarking_mode=True)
 
+
 def run_bvns(graph, kmax=3):
+    """
+    Runs our Basic Variable Neighborhood Search (BVNS) implementation.
+
+    Parameters:
+    - graph: NetworkX Graph on which the BVNS algorithm will be run
+    - kmax: The maximum k-value used in BVNS (optional, default is 3)
+
+    Returns:
+    - A list of communities found by BVNS (represented as sets)
+    """
     sys.path.append("../../Jake/bvns")
     import bvns_implementation as bvns
 
@@ -33,6 +68,19 @@ def run_bvns(graph, kmax=3):
 
 
 def measure_performance(algorithm, graph, kmax=3):
+    """
+    Measures the time and memory usage of a given community detection algorithm.
+
+    Parameters:
+    - algorithm: The function that implements the community detection algorithm
+    - graph: NetworkX Graph on which the algorithm will be run
+    - kmax: The maximum k-value if BVNS is selected (optional, default is 3)
+
+    Returns:
+    - partition: The resulting communities from the algorithm
+    - elapsed_time: The total time taken by the algorithm
+    - memory_used: The peak memory usage during execution (in bytes)
+    """    
     tracemalloc.start()
     start_time = time.time()
     
@@ -50,6 +98,20 @@ def measure_performance(algorithm, graph, kmax=3):
     return partition, elapsed_time, memory_used
 
 def run_benchmark(graph: nx.Graph, kmax=3):
+    """
+    Runs all three community detection algorithms (Girvan-Newman, Louvain, BVNS)
+    on the provided graph and collects performance metrics.
+
+    Parameters:
+    - graph: NetworkX Graph to be used for benchmarking
+    - kmax: The maximum k-value for BVNS (optional, default is 3)
+
+    Returns:
+    - A dictionary containing:
+        - Number of nodes/edges
+        - Execution time, peak memory usage, and modularity for each algorithm
+        - The final communities outputted by each algorithm
+    """    
     num_nodes = graph.number_of_nodes()
     num_edges = graph.number_of_edges()
 
@@ -119,6 +181,9 @@ def run_benchmark(graph: nx.Graph, kmax=3):
 
 
 if __name__ == "__main__":
+    """
+    Runs our full benchmarking pipeline on the dataset the user specifies
+    """
     # https://docs.python.org/3/library/argparse.html
     parser = argparse.ArgumentParser(
         description="Run our implementations of community detection algorithms on a dataset."

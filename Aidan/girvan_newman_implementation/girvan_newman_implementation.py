@@ -1,6 +1,4 @@
 """
-** Run this file to run our Girvan-Newman implementation **
-
 Wrapper file around our Girvan-Newman algorithm implementation to 
 run our implementation and plot the result
 
