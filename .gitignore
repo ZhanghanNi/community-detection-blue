@@ -186,3 +186,6 @@ cython_debug/
 
 # Numbers files
 *.numbers
+
+# Generated virtual enviornment
+community_detection_blue_comps_env
