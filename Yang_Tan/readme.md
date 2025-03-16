@@ -1,4 +1,6 @@
-# README
+# README for Yang's Folder
+
+Only follow the instructions in this README if you are trying to run the `gps_visualization.py` script which renders a visualization of our old GPS data. If you are trying to run the `louvain_method.py` script, follow the instructions in the README in the root directory of the repository.
 
 ## GPS Visualization (`gps_visualization.py`)
 
@@ -56,18 +58,3 @@ test
 pip3 install fsspec gcsfs
 
 
-
-## Louvain Method (`louvain_method.py`)
-
-### Prerequisites
-
-1. **Install `networkx` and `python-louvain`:**
-   ```bash
-   pip install networkx
-   ```
-
---- 
-
-### Notes
-- This README provides setup instructions for running the `gps_visualization.py` and `louvain_method.py` scripts.
-- Ensure all dependencies are installed before running the scripts to avoid errors.
