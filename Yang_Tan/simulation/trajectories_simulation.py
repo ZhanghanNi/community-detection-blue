@@ -94,7 +94,6 @@ class AreaSplitter:
         return self.areas
 
 
-
 class Area:
     def __init__(self, bounds):
         self.bounds = bounds
@@ -193,16 +192,16 @@ def visualize(moving_objects, sub_areas, a, b):
     ax.set_ylim(0, b)
     colors = plt.cm.get_cmap("Paired", len(sub_areas) * 2)
     area_colors = {}
-    
+
     # Plot each sub-area (Voronoi cell) as its polygonal shape
     for i, area in enumerate(sub_areas):
         area_colors[tuple(area.bounds)] = colors(i)
-        
+
         # Ensure each area is a valid polygon
         if isinstance(area, Polygon):
             x, y = area.exterior.xy
             ax.fill(x, y, color=colors(i), alpha=0.3, label=f'Area {i+1}')
-    
+
     # Plot moving objects with labels for their assigned areas
     for obj in moving_objects:
         color = colors(sub_areas.index(obj.assigned_areas[0])) if len(obj.assigned_areas) == 1 \
@@ -213,7 +212,7 @@ def visualize(moving_objects, sub_areas, a, b):
         # Create label for assigned areas, either 1 or 2 areas
         label = ', '.join([f'Assigned Area {sub_areas.index(area) + 1}' for area in obj.assigned_areas])
         ax.scatter(x_vals[-1], y_vals[-1], s=5, color=color, alpha=0.6, label=label)
-    
+
     # Add the legend for moving objects only
     # We ensure only unique labels are shown by passing unique labels in `handles` and `labels`
     handles, labels = ax.get_legend_handles_labels()
@@ -224,11 +223,9 @@ def visualize(moving_objects, sub_areas, a, b):
             unique_handles.append(handle)
             unique_labels.append(label)
 
-   # Adjust the legend position outside the plot but within the window
+    # Adjust the legend position outside the plot but within the window
     ax.legend(handles=unique_handles, labels=unique_labels, loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0.)
-    
+
+    plt.title("Division of Areas for Urban Movement Simulation")
     plt.tight_layout(pad=2)
     plt.show()
-
-
-
