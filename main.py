@@ -127,6 +127,7 @@ def main():
             100,
             algorithm_name,
         )
+        
         result_analysis.plot_results()
 
 

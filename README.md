@@ -1,9 +1,7 @@
 # Community Detection Blue Carleton College Winter 2025 Senior Project (COMPS) Repository 
 
-### Yang Tan, Aidan Roessler, Tony Ni, Jake Jasmer
-
-Also check out our project's website [here]() which includes our final paper and posters.
-
+### Jake Jasmer, Tony Ni,  Aidan Roessler, Yang Tan
+<!-- TODO: Add website link once it is published online -->
 ## Installing Dependencies
 Credit to [Python Documentation on Virtual Environments](https://docs.python.org/3/tutorial/venv.html) and Packages for the following instructions. Check it out if you want more information.
 
@@ -43,7 +41,7 @@ usage: python3 main.py [-h]
         --dataset {karate_club,college_football,celegans_neural,urban_movement_synthetic}
 ```
 
-Note: runs all algorithms with no limit on the number of communities, instead all return communities that maximize modularity. Louvain runs for two iterations and BVNS runs with 100 iterations and a kmax of 3 for all datasets except for Karate Club and College Football where kmax is 4.
+Note: runs all algorithms with no limit on the number of communities, instead all return communities that maximize modularity. All of our datasets consist of weighted graphs, but weights may not be displayed for the sake of producing readable plots. The second plot that shows our results is a graph where communities have been merged into just one node and labeled with a number. Louvain runs for two iterations and BVNS runs with 100 iterations and a kmax of 3 for all datasets except for Karate Club and College Football where kmax is 4.
 
 ## File Structure
 Each member of the team has their own directory with miscellaneous files. Please only run `main.py` as it has the capability to run all of our algorithms on all of our datasets. There is also a `Util` directory for shared utility functions used across implementations.
